@@ -1,0 +1,27 @@
+---
+title: "Heterogeneity and fluctuating environments"
+author: "Bruce Kendall"
+date: "July 15, 2016"
+output: html_document
+---
+
+Most theoretical research on demographic heterogeneity looks at constant environments.  Exceptions include:
+
+- Connor and White
+- Robert et al plant model (need to double check this)
+
+Tuljapurkar et al. (2009) give a framework for looking at the relationship between fitness and life history in fluctuating environments. They also have a list of 6 statistics that they find useful for characterizing the average life history:
+
+- Net reproductive rate: $R_0 = \sum_x l(x) m(x)$, where $x$ is age, $l(x)$ is survivorship to age $x$, and $m(x)$ is fertility at age $x$
+- Cohort generation time: $T_c = \frac{1}{R_0} \sum_x x l(x) m(x)$
+- Demographic dispersion, $\sigma_d$: $\sigma_d^2 = \frac{1}{R_0} \sum_x (x - T_c)^2 l(x) m(x)$
+- Average individual fitness: $r = \log \lambda$, where $\lambda$ is the dominant eigenvalue of the projection matrix
+- Generation time in a stable population: $T = \sum_x l(x) m(x) e^{-rx}$
+- Damping time, $\tau$
+
+They then examine how fitness in a variable environment (which is $r$ modified by the effects of varying vital rates) depends on the interaction between average life history characteristics (from the above 6 statistics) and the variance-covariance structure (including temporal autocorrelations) of the environment.
+
+An interesting project will be to think about how this works in a heterogenous population.
+
+# References
+Tuljapurkar, S., J.-M. Gaillard, and T. Coulson. 2009. From stochastic environments to life histories and back. Philosophical transactions of the Royal Society of London. Series B, Biological sciences 364:1499-1509.

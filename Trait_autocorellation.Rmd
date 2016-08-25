@@ -1,0 +1,162 @@
+---
+title: "Trait autocorrelation"
+author: "Bruce Kendall"
+date: "August 22, 2016"
+output: html_document
+---
+
+# Literature
+So far, all of the ecological literature I have found uses "fixed" heterogeneity---that is, the trait (which is often frailty) is given at birth and is unchanged through life.
+
+In human demography, Keyfitz & Caswell (2005) give an example on p. 491 of "age-dependent frailty," attributed to Yashin et al. (1994). Here's the quote (note that there seems to be a confusion of $\gamma$ and $\gamma_0$):
+
+> The models discussed so far assume that each individual has a fixed frailty, assigned at birth and kept until death. An alternative conceptualization assumes that all individuals are born with the same frailty, and that frailty then changes with age (e.g., Yashin et al. 1994). Suppose there are discrete frailty states 0,1,...,n, representing increasing levels of frailty, and that frailty affects mortality as
+
+>> μ(z, x) = μ0(x) + zμ. (19.4.12) 
+
+> Here, μ is the rate at which mortality increases with increased frailty. Frailty
+changes over time, either increasing according to 
+
+> P(z(t+dt)=z+1)=(γ0 +zγ)dt (19.4.13)
+
+> P(z(t+dt)=z)=1−(γ0 +zγ)dt. (19.4.14)
+
+> Here, γ is the rate of increase in frailty.
+
+> This model leads to a system of differential equations that can be solved
+for the probability distribution of individuals among frailty classes at any age. From this, as n → ∞, the observed mortality is
+$\bar{\mu}(x) = \mu_0 + \frac{\mu \gamma_0 \left(1 - e^{(\gamma + \mu) x}\right)}{\mu + \gamma e^{(\gamma + \mu) x}}$ , (19.4.15)
+
+> which produces a logistic pattern of observed mortality (Yashin et al. 1994).
+
+This appears to be a model in which frailty can only increase with age, but at a variable rate (there is no equation for diffusing to smaller values).
+
+# A simple IPM
+We will address this using the IPM framework to allow a trait to develop through time. The trait $z$ has an initial mean of zero (e.g., frailty on a log scale) and variance $\sigma_0^2$, and annual survival has a logistic dependence on $z$. The trait develops as $z_{i,t+1} = \rho z_{i,t} + \epsilon_{i,t}$, where $\epsilon$ is normally distributed with a variance appropriate to keep the variance of $z$ constant in the absence of selection. This can be ensured by setting $\sigma^2_{\epsilon} = \left(1 - \rho^2 \right) \sigma^2_0$.
+
+We will assume the logistic survival function has slope 1 (adjusting slope and $\sigma_0$ has the same effect). For illustrative purposes, we will assume an intercept of zero, so that the mean survival at birth is 0.5. We'll also assume an annual fecundity of 0.4.
+
+OK, let's start setting things up using IPMpack. Note that $z$ will be called "size" because that is hard-coded into IPMpack.
+```{r}
+library(IPMpack)
+library(popbio)
+mesh_size <- 100
+rho <- 0.99
+sigma0 <- 1
+Fec <- 0.4
+int <- 0
+zmin <- -6 * sigma0
+zmax <- 6 * sigma0
+sigma_eps <- sqrt((1 - rho^2) * sigma0^2)
+gr1 <- makeGrowthObj(Formula = sizeNext ~ -1 + size, coeff = c(rho, sigma_eps), sd = sigma_eps)
+sv1 <- makeSurvObj(Formula = surv ~ size, coeff = c(int, 1,1))
+# There seems to be a problem in which the specified coefficient is not reliably assigned
+sv1@fit$coefficients[1] <- 1
+Pmatrix <- makeIPMPmatrix(nBigMatrix = mesh_size, minSize = -6*sigma0, maxSize = 6*sigma0, growObj = gr1, survObj = sv1, correction = "constant")
+# diagnosticsPmatrix(Pmatrix, gr1, sv1)
+fec1 <- makeFecObj(Formula = list(fec ~ size), meanOffspringSize = 0, sdOffspringSize = sigma0, coeff = list(c(Fec,0)))
+Fmatrix <- makeIPMFmatrix(fec1,nBigMatrix = mesh_size, minSize = -6*sigma0, maxSize = 6*sigma0)
+IPM <- Pmatrix + Fmatrix
+Re(eigen(IPM)$value[1])
+R0Calc(Pmatrix, Fmatrix)
+xx <- seq(zmin, zmax, length.out = mesh_size)
+del <- min(diff(xx))
+plot(xx, stable.stage(IPM)/del, type='l')
+lines(xx, dnorm(xx, 0, sigma0), col = "red")
+mean_surv <- sum(stable.stage(IPM) * 1/(1+exp(-xx)))
+R0_naive <- Fec/(1-mean_surv)
+```
+It works for negative and zero values of $\rho$, but fails for $\rho = 1$; some sort of singularity in the eigenvalue calculation.
+
+
+**Make the above code into a function and run it across a range of $\rho$ and $\sigma$**
+
+Now we turn this into a function:
+```{r}
+arIPM <- function (rho, sigma0, int = 0, Fec = 0.4, mesh_size = 100, 
+                   zmin = -6 * sigma0, zmax = 6 * sigma0, plot.it = FALSE) {
+  sigma_eps <- sqrt((1 - rho^2) * sigma0^2)
+  gr1 <- makeGrowthObj(Formula = sizeNext ~ -1 + size, coeff = c(rho, sigma_eps), 
+                       sd = sigma_eps)
+  sv1 <- makeSurvObj(Formula = surv ~ size, coeff = c(int, 1))
+  # There seems to be a problem in which the specified coefficient is not reliably assigned
+  sv1@fit$coefficients <- c(int, 1)
+  Pmatrix <- makeIPMPmatrix(nBigMatrix = mesh_size, minSize = zmin, 
+                            maxSize = zmax, growObj = gr1, survObj = sv1, 
+                            correction = "constant")
+  # diagnosticsPmatrix(Pmatrix, gr1, sv1)
+  fec1 <- makeFecObj(Formula = list(fec ~ size), meanOffspringSize = 0, 
+                     sdOffspringSize = sigma0, coeff = list(c(Fec,0)))
+  Fmatrix <- makeIPMFmatrix(fec1,nBigMatrix = mesh_size, 
+                            minSize = zmin, maxSize = zmax)
+  IPM <- Pmatrix + Fmatrix
+  lambda <- Re(eigen(IPM, only.values = TRUE)$value[1])
+  R0 <- R0Calc(Pmatrix, Fmatrix)
+  xx <- seq(zmin, zmax, length.out = mesh_size)
+  del <- min(diff(xx))
+  SSD <- popbio::stable.stage(IPM)
+  if (plot.it) {
+    plot(xx, SSD/del, type='l')
+    lines(xx, dnorm(xx, 0, sigma0), col = "red")
+  }
+  mean_surv <- sum(SSD * 1/(1+exp(-xx)))
+  R0_naive <- Fec/(1-mean_surv)
+  mean_z <- sum(xx * SSD)
+  sd_z <- sqrt(sum(SSD * (xx - mean_z)^2))
+  return(list(
+    lambda = lambda,
+    R0 = R0,
+    R0_naive = R0_naive,
+    mean_surv = mean_surv,
+    mean_z = mean_z,
+    sd_z = sd_z,
+    dists = data.frame(
+      z = xx,
+      newborns = dnorm(xx, 0, sigma0),
+      adults = SSD/del
+    )
+  ))
+}
+```
+Now let's run it.
+
+```{r gen_data, cache=TRUE}
+rho_list <- c(0, 0.3, 0.6, 0.9, 0.9999)
+sd_list <- seq(0.01, 4, 0.01)
+num_rho <- length(rho_list)
+num_sd <- length(sd_list)
+Fec <- 0.4
+survive <- 0.5
+results <- data.frame(rho = rho_list,
+                      sigma0 = 0,
+                      lambda = Fec + survive,
+                      R0 = Fec / (1-survive),
+                      R0_naive = Fec/(1-survive),
+                      mean_surv = survive,
+                      mean_z = 0,
+                      sd_z = 0
+                      )
+for (rho in rho_list) {
+  print(rho)
+  for (sigma0 in sd_list) {
+    temp <- arIPM(rho, sigma0)
+    results <- rbind(results, cbind(data.frame(rho=rho, sigma0=sigma0),
+                                    as.data.frame(temp[1:6])))
+  }
+}
+```
+
+```{r}
+library(ggplot2)
+results$rho <- as.factor(results$rho)
+qplot(sigma0, lambda, data=results, color = rho)
+qplot(sigma0, R0 - R0_naive, data=subset(results, rho != 0.9999), color = rho)
+qplot(sigma0, mean_z, data=results, color = rho)
+qplot(sigma0, sd_z, data=results, color = rho)
+```
+There are some wierd artefacts with $\rho=0.9999$ and sd between 0.5 and 1---it appears that there is a secondary peak far to the right. It also appears at 0.999; I should just use 0.99.
+
+# References
+Keyfitz, N., and H. Caswell. 2005. Applied mathematical demography, 3rd edition. Springer, New York.
+
+Yashin, A.I., J.W. Vaupel, and I.A. Iachine. 1994. A duality in aging: The equivalence of mortality models based on radically different concepts. Mechanisms of Ageing and Development 74:1–14.

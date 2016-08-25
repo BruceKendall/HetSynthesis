@@ -1,0 +1,1 @@
+The main file is "Het synthesis.Rmd". The other files represent notes and numerical experiments.
