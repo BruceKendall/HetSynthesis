@@ -3,6 +3,17 @@ title: "Heterogeneity synthesis"
 author: Bruce E. Kendall, Gordon A. Fox, and Tim Coulson 
 output: pdf_document
 ---
+
+```{r packages_and_options, message=FALSE, echo=FALSE, results='hide'}
+knitr::opts_chunk$set(cache = TRUE, echo=FALSE, autodep=TRUE, message = FALSE,
+                      warning=FALSE, results = "hide")
+library(IPMpack)
+library(ggplot2)
+source("Het_funcs.R") # Provides the following functions:
+                      # arIPM()
+
+```
+
 # Introduction
 
 Heterogeneity among individuals within a population is a ubiquitous phenomenon. Some of that heterogeneity is related to ontogeny: in most species, adults are larger than juveniles, and in metamorphic species that don't follow that pattern, juveniles and adults have qualitatively different morphologies, physiologies, and behaviors. Even controlling for age and developmental stage, however, we often see substantial variation in traits such as size, color, feeding preferences, and behavior. 
@@ -72,7 +83,41 @@ Under natural selection, more fit individuals leave, on average, more offspring 
 
 Cohort selection is a somewhat subtler phenomenon (it is also confusingly named, because it refers *both* to the selection and the ecological response to selection). If some individuals in a cohort have traits that give them consistently higher-than-average annual survival (or consistently lower-than-average instantaneous mortality), then as the cohort ages the trait distribution within the cohort will predictably shift towards the values that give higher survival. As a result, mean survival will increase with age, above and beyond any age-specific survival patterns associated with the mean trait at birth (Vaupel etc.). Compared with a population that has no heterogeneity, cohort selection increases the density-independent population growth rate and can increase density-dependent equilibrium abundances (Kendall2011, Stover). If the population is at its stable trait distribution, then ignoring such heterogeneity will not bias the estimate of $\lambda$, but will lead to incorrect estimates of some life-history characteristics (Vindenes). Furthermore, ignoring this heterogeneity will create problems if the population is away from the stable trait distribution, as will be common in a fluctuating environment.
 
-Cohort selection is usually expressed in terms of so-called frailty models, in which an individual's frailty is its hazard deviation from the age-specific hazard of the mean frailty at birth. Such frailties are assumed to be constant through an individual's lifetime, and can be estimated even if no measured trait is associated with frailty. This assumption of perfect within-individual autocorrelation is essential for the trait-free estimation; but in many cases individuals may exhibit trait autocorrelation less than one. It is possible to show that this still results in cohort selection, albeit in a weaker form. [DERIVE THIS RESULT IN A SIMPLE MODEL]
+Cohort selection is usually expressed in terms of so-called frailty models, in which an individual's frailty is its hazard deviation from the age-specific hazard of the mean frailty at birth. Such frailties are assumed to be constant through an individual's lifetime, and can be estimated even if no measured trait is associated with frailty. This assumption of perfect within-individual autocorrelation is essential for the trait-free estimation; but in many cases individuals may exhibit trait autocorrelation less than one. It is possible to show that this still results in cohort selection, albeit in a weaker form (Fig. \ref{fig:arIPM-plot}). 
+
+```{r arIPM_run}
+rho_list <- c(0, 0.3, 0.6, 0.9, 0.99)
+sd_list <- seq(0.01, 4, 0.01)
+num_rho <- length(rho_list)
+num_sd <- length(sd_list)
+Fec <- 0.4
+survive <- 0.5
+results <- data.frame(rho = rho_list,
+                      sigma0 = 0,
+                      lambda = Fec + survive,
+                      R0 = Fec / (1-survive),
+                      R0_naive = Fec/(1-survive),
+                      mean_surv = survive,
+                      mean_z = 0,
+                      sd_z = 0
+                      )
+for (rho in rho_list) {
+  print(rho)
+  for (sigma0 in sd_list) {
+    temp <- arIPM(rho, sigma0)
+    results <- rbind(results, cbind(data.frame(rho=rho, sigma0=sigma0),
+                                    as.data.frame(temp[1:6])))
+  }
+}
+```
+```{r arIPM-plot, fig.cap="Effect of autocorrelated variation in a trait affecting annual survival on $\\lambda$. The trait, $z$, is normally distributed with mean zero and variance $\\sigma_0^2$ in the youngest age class; as an idividual ages, its trait evolves according to $z(t+1) = \\rho z(t) + \\epsilon$, where $\\epsilon$ is a zero-mean random number with variance set to maintain the variance of $z$ at $\\sigma_0^2$ in the absence of selection. Annual survival, S, is given by logit($S$) = $z$ (and hence is 0.5 in the absence of trait variance), and annual reproduction is 0.4. \\label{fig:arIPM-plot}"}
+results$rho <- as.factor(results$rho)
+qplot(sigma0^2, lambda, data=results, color = rho, 
+      xlab = expression(paste("Trait variance at birth(", sigma[0]^2, ")")),
+      ylab = expression(paste("Population growth rate (", lambda, "):"))) +
+  scale_color_discrete(name=expression(paste("Trait autocorrelation (", rho, ")"))) +
+  theme(legend.position="top")
+```
 
 Within-individual correlations in traits that affect survival lead to cohort selection; the same is *not* true for traits that affect fertility. Individuals with consistently higher than average fertility produce more offspring, but they do not increase in frequency within the cohort as the cohort ages. Unless the fertility traits are correlated with the survival traits, a cohort's fertility distribution is set by the distribution of traits at birth, and in particular a cohort's mean fertility simply follows the age-specific trajectory associated with the mean trait at birth. 
 
