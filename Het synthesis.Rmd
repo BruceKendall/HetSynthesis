@@ -22,11 +22,14 @@ Some of this variation is caused by genetic differences: for example, coat color
 
 The causes and consequences of trait heterogeneity at all scales are the central motivations of evolutionary biology, and within-population heterogeneity, when it affects individual fitness, is the focus of population and quantitative genetics. Historically, ecologists focused on variation at higher levels, generally viewing individual variation as "noise," expecting that mean birth and death rates adequately characterized the population. Notable exceptions: Lomnicki, various work on effects of spatial heterogeneity in density, IBM practitioners. About 15 years ago, we and a few others started asking whether such "demographic heterogeneity"" could affect population dynamics (Kendall & Fox, Connor & White). The topic has since become increasingly popular, with questions being asked about effects on communities as well as populations, but we are still in a stage dominated by speculation and contention. 
 
+There are two fundamental reasons why we care about heterogeneity (Vindenes). First, if heterogeneity is present, but we do not account for it in our models and data analysis of a particular population, will we get biased estimates of population- (or cohort-) level quantities such as population growth rate, equilibrium abundance, average longevity, or reproductive number? The current population growth rate, of course, can be estimated directly from the average birth and death rates across all individuals in the population, soe we don't need to know about heterogeneity. Furthermore, if the population is at the asymptotically stable trait distribution (in the same sense as the stable age structure in age-structured populations), then the asymptotic growth rate ($\lambda$) can likewise be found without considering heterogeneity. However, even at the stable trait distribution, quantities such as $R_0$ are mis-estimated if heterogeneity is ignored (Vindenes); and if the population is not at the stable distribution (as will be the norm, e.g., in fluctuating environments), then failing to account for heterogeneity will even bias estimates of the asymptotic growth rate. Similarly, we expect that fully accounting for heterogeneity will be key to predicting a population's response to a changing environment (Coulson et al).
+
+Second, there are fundamental questions about how heterogeneity affects life history, ecological, and evolutionary dynamics. This is particularly relevant to predict oucomes in systems undergoing changes in environmental heterogeneity or genetic diversity, to investigate factors that may lead to selection for phenotypic variation, and to understand the knock-on effects of processes that generate heterogeneity. For example, Kendall et al. found that an aggression-boldness syndrome, in which individuals differ in their "personality," could cause a decrease in equilibrium abundance compared to a homogeneous population with just the non-aggressive behavioral type.
+
 So far, I've been talking about traits that are easy to observe, such as size, color, and behavior. But for variation in such traits to impact population dynamics or evolution, they must affect affect demography---births and deaths. The term "fitness trait" is often used to describe an individual's underlying demographic propensities: the expected offspring number, and its mortality hazard, or probability of dying. However, we cannot measure these quantities directly; rather we observe an individual's realized demography---how many offspring it had, whether it died. We can use these data, aggregated across a population, to estimate how fitness traits are correlated with observed traits, of course, but they are often also affected by unobserved individual characteristics, some of which are fundamentally unobservable in free-living populations. The effects of such "latent" variability on demography are challenging to estimate, especially when they affect mortality risk. Ideas about how best to do this estimation are still evolving, and much contention derives from the fact that different approaches reach different conclusions.
 
-Something about 
 
-GET RID OF Functional traits THROUGHOUT
+- **GET RID OF Functional traits THROUGHOUT**
 
 Something about how fitness depends on interaction between individual trait and environment, and how environmental het can create demographic heterogeneity even without trait variabiltiy.
 
@@ -73,6 +76,9 @@ Caswell (2009) simultaneously used the term "individual stochasticity" to descri
 
 
 # Heterogeneity and selection
+> Tim doesn't like the distinction between natural selection and cohort selection, as the latter is part of the former. Actually, it's more subtle: natural selection is made up of viability selection and fertility selection. The intergenerational response to selection on either of these requires parent-offspring correlation. There is also a within-generation response to viability selection, which is the phenomenon with the name "cohort selection".
+
+
 If a population exhibits heterogeneity in traits, then it may have a distribution of fitnesses across individuals (following Steiner & Tulja, we reserve the word "fitness" for *expected* outcomes; for an individual's *realized* outcome we use "fitness component"). The role of static trait heterogeneity in creating a fitness distribution is clear; for dynamic traits the  key question is whether an individual's initial trait value predicts its expected trait value, averaged over its lifetime. In general, this will require positive autocorrelation in the trait over the individual's life, with larger autocorrelation coefficients resulting in a stronger association between initial trait value and individual fitness. Indeed, a static trait can be equated to the limiting case of a dynamic trait with an autocorrelation of one. Thus, we conjecture that *for trait heterogeneity to create fitness differences among individuals, traits must be positively autocorrelated within individuals.* [DO WE WANT TO TRY TO PROVE THIS?]
 
 THE PREVIOUS PARAGRAPH IS NOT ENTIRELY RIGHT, OR AT LEAST NOT COMPLETE. For example, the arguments really only apply to traits that affect fitness components repeatedely throughout the life cycle. Counter-examples include traits that affect viability in newborns or offspring number in the reproductive stage of monocarpic/semelparous species.
@@ -110,7 +116,9 @@ for (rho in rho_list) {
   }
 }
 ```
+
 ```{r arIPM-plot, fig.cap="Effect of autocorrelated variation in a trait affecting annual survival on $\\lambda$. The trait, $z$, is normally distributed with mean zero and variance $\\sigma_0^2$ in the youngest age class; as an idividual ages, its trait evolves according to $z(t+1) = \\rho z(t) + \\epsilon$, where $\\epsilon$ is a zero-mean random number with variance set to maintain the variance of $z$ at $\\sigma_0^2$ in the absence of selection. Annual survival, S, is given by logit($S$) = $z$ (and hence is 0.5 in the absence of trait variance), and annual reproduction is 0.4. \\label{fig:arIPM-plot}"}
+
 results$rho <- as.factor(results$rho)
 qplot(sigma0^2, lambda, data=results, color = rho, 
       xlab = expression(paste("Trait variance at birth(", sigma[0]^2, ")")),
@@ -215,3 +223,6 @@ In general, this covariance will be situation-specific, but there are a few ecol
 Relate this to Vindenes' estimate of the demographic variance under het
 
 # Discussion
+
+- Doing all this in fluctuating environments (which is required for application to real populations) has not been done in any general sense; it is an important problem, but probably not something we want to solve in this paper
+
