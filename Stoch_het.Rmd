@@ -7,6 +7,26 @@ output: pdf_document
 
 Here is where I work out notation and derivations on this topic; relevant bits will then be moved to the main manuscript.
 
+# Stop presses! The fundamental differences between "demographic stochasticity" and "individual variation in demography"
+
+I was trying to work out the effects of correlated heterogeneity (e.g., the extreme case in our first paper of exactly half the individuals being of each type, which generates a negative covariance in paramters) on the mixture model that Hal uses (below and in the main ms), and getting helplessly tied up in knots, because it seemed to have no effect. For example, if half the individuals have trait $\mu + \sigma$ and the other half have trait $\mu - \sigma$, the trait variance among individuals (what goes into the second part of the variance decomposition) is still $\sigma^2$, just as it would be (in expectation) if each individual independently drew its trait with a 50:50 odds ratio. Carrying through the calculation, the correlation has no impact on the variance among individual outcomes as well (of course, this assumes that the $d_i$ [see below] are independent of one another, and of the trait value).
+
+So what the heck is going on? It finally dawned on my that there is a deep and fundamental difference between what Hal is focused on and what we are focused on.
+
+Let $X_i$ be the demographic outcome of individual $i$. Hal is interested in understanding variability among individuals in indidual outcomes, calculating $M_1 = E[X]$ and $V_1 = E[(X-M_1)^2]$, where expectations are taken over individuals. In contrast, we have been interested in understanding variability among (hypothetical) replicate populations in population outcomes, typically a per-capita outcome such as $Y = \frac{1}{n}\sum_{i=1}^n X_i$. Thus, we calculate $M_2 = E[\frac{1}{n}\sum_{i=1}^n X_i]$ and $V_2 = E[(\frac{1}{n}\sum_{i=1}^n X_i - M_2)^2]$. Note that $M_1 = M_2$, but that the variances will be different if the $X_i$ are correlated, because of all the terms in $X_i X_j$ in $E[Y^2]$.
+
+$V_1$ is observable in any population, whereas $V_2$ is observable only with experimentally controlled replicates. Thus, $V_1$ will appeal to empiricists. However, it is $V_2$ that affects estimates of extinction risk (e.g.) in population projections. For wild populations, it is a theoretical construct; it can be estimated from data only by making assumptions about distributional forms, and is not directly observable. [An aside: I'm not sure that issues of estimation error of $V_2$ from finite datasets has been addressed.]
+
+There is still an impact of correlations on what Hal is interested in, which is that correlations will mean that the standard error of $M_1$ will not be $\sqrt{V_1/n}$ (in the extreme case of exactly half having survival 1 and half having survival 0, there is no sampling error in the empirical estimate of mean survival). 
+
+So what to do with this? The stochasticity--heterogeneity variance decomposition can still be applied to $Y$ (although it will be a more complex calculation), allowing us to explicitly document the effects of positive and negative correlations among individuals in their heterogeneity class. It could even allow us to look at correlations among *stochastic outcomes* (e.g., calf can't survive if its mother dies), or between heterogeneity class and stochastic outcomes (e.g., in a rank-order hierarchy, your rank improves as higher-ranked individuals die). But because the results are mostly interesting in the context of demographic stochasticity, I think the focus would be on annual vital rates (what is the point in looking at the variance in per-capita longevity?).
+
+I suppose one new direction might be looking at how heterogeneity in within-year processes (e.g., instantaneous mortality hazard) translates into annual stochasticity (might be most interesting if there are dependencies in the stochastic part).
+
+It is probably still worth identifying the interaction between heterogeneity and stochasticity, as written up in the main ms; this doesn't require treatment of correlations. It will mean that we need to invite Hal and members of his group to contribute as they haven't published the initial idea about the decomposition yet. One thing this could do is let us identify situations where heterogeneity reduces the among-individual variance (basically, it will require $V_D'' < -2$, although there could be contributions from higher moments/derivatives). I'm not sure that there will be any relevant stochastic processes for which this condition applies though; and certainly the LRS statistics that Hal and Tulja focus on will not be there, as they are dominated by the exponential-like distributions of longevity.
+
+None of this invalidates the criticisms of "individual stochasticiy" as a null model for identifying fixed heterogeneity, which are twofold: Low power (because of a large SE for the observed variance of an exponential process) and variance inflation if the Morkovian assumption is violated.
+
 # Notation
 
 - $X_i$ is the outcome of a stochastic process for individual $i$. It might be survival (or not); number of offspring from a reproductive bout; life span; lifetime reproductive success; etc.
