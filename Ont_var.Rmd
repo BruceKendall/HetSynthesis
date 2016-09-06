@@ -1,0 +1,37 @@
+---
+title: "Ontogenetic variability"
+author: "Bruce Kendall"
+date: "September 6, 2016"
+output: html_document
+---
+
+Variability in development and growth
+We know that stochastic variation around a growth function creates autocorrelation in residual size at age. But what if some of the observed variation in growth at size is due to heterogeneity?
+
+One type of het is fixed individual differences in the parameters of the growth function. If the differences are in the intercept, so that the individual growth functions don't cross, then I think this will tend to *increase* autocorrelation in residual size at age, even taking into account the reduction in stochastic variation relative to the naive estimate. If the slopes differ, such that the functions cross, it is less obvious what the net effect will be.
+
+In contrast, if the growth functions are age dependent (which I think is what we get out of IPMs that account for both size and age, although I will need to look at some examples), then I think that the naive (age-independent) estimates of the growth function will tend to overestimate the variability of size at age, and more importantly, age at size (I think it is the latter that is more analogous to development time and hence represent the effects of ontogenetic variability on LRS variability).
+
+Things to do with this...
+
+- A series of models without cohort-selection (i.e., survival is not size dependent) to show:
+	- Patterns of autocorrelation and variance in simple stochastic model
+	- Same with fixed growth function het
+	- Same with age-dependent growth functions
+		- Need to look up examples to see how these have been parameterized in past
+	- For all of these, I think the way to proceed is to have no mortality, and just use the growth kernel. The patterns of autocorrelation can be analyzed by following a cohort.  The cohort can also be used to get mean and variance of size at age, but not the distribution of age at size.
+- Introducing size-dependent survival will create cohort selection, and we need at the very least to make an assumption about $\lambda$ to get the age structure right. 
+- Try using the autocorrelation in size residuals to use the autocorrelated frailty model.
+
+ 
+
+# Development variability
+As a simple test of how the Markovian assumption affects the estimation of variance in LRS, consider a simple model in which juveniles have survival $J$ and adults have survival $P$; annual adult reproduction is $F$. For an individual with development time $\tau$, fitness is $Z(\tau) = J^{\tau} F / (1-P)$ (probability of survival to age $\tau$ times annual reproduction times expected lifespan as adult). If $\tau$ is a random variable with mean $M$ and variance $V$, then a Taylor expansion gives $E[Z] = Z(M) (1 + V \frac{M (M-1)}{2 J^2})$. Thus stochastic variation in maturation time increases mean fitness.
+
+I'm not yet sure what the effective distribution of $\tau$ actually is in the Markovian model, as it is unobserved for individuals that die before maturing. But the fitness is $Z = \mu F/(1-P)$, where $\mu$ is the probability of ever maturing; if $g$ is the annual maturation probability, then $\mu = \sum_{t=0}^{\infty} J^{t+1} (1-g)^t g = J g  \sum_{t=0}^{\infty} [J (1-g)]^t = \frac{J g}{1 - J + gJ}$. Not sure where to go with this though.
+
+Anyhow, back to the variance in LRS: $Z(\tau)^2 = J^{2\tau} F^2 / (1-P)^2$ so $E[Z^2] = Z(M)^2 (1 + V \frac{2M (2M - 1)}{2 J^2})$ and $V(Z) = Z(M)^2 [V \frac{2M (2M - 1) - 2M(M-1)}{2 J^2} - V^2 \frac{M^2 (M-1)^2}{2 J^4}] = Z(M)^2 [V \frac{M^2}{J^2} - V^2 \frac{M^2 (M-1)^2}{4 J^4}] = Z(M)^2 V \frac{M^2}{J^2} [1 - V \frac{(M-1)^2}{4 J^2}]$.
+
+If I've done the math right then a small variance in development time will increase the variance in LRS (relative to a fixed development time), but a large development time variance will actually decrease the LRS variance. Note that "large" depends on the relative values of M and J.
+
+I wonder if the above calculation really is about *heterogeneity* in development time rather than stochastic variation? That is, an individual gets a maturation time at birth. Perhaps a better way to approach the stochastic part is to look at a range of functions for age-dependent maturation probability, from flat (Markovian assumption) to a step function (fixed development). The tricky bit is that getting the non-flat functions to be consistent with the observed maturation fraction (the constant in the Markovian model) will require assumptions about the age distribution within the juvenile stage; if we assume asymptotic age distributions then the family of functions (and hence their effects on LRS variance) will depend on $\lambda$, much as in the stage-for-age substitutions. Maybe just focus on the fixed development contrast; but even there it's not obvious that we will be able to match *both* the maturation fraction and the mean maturation time.
