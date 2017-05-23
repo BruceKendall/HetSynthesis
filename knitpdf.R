@@ -12,4 +12,5 @@ knitpdf <- function(fname){
     knit(inRmd)
     markdownToHTML(inmd, inhtml, options=c("use_xhml"))
     pandoc(inhtml, format='latex')
+    shell.exec(inpdf)
 }
