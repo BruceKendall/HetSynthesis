@@ -1,16 +1,12 @@
 knitpdf <- function(fname){
-    require(knitr)
-    require(markdown)
+#    require(knitr)
+    require(rmarkdown)
 
-#   Aliases for .md, .html, and .pdf files
+#   Aliases for .Rmd and .pdf files
     inRmd <- paste(fname,".Rmd",sep="")
-    inmd <- paste(fname,".md",sep="")
-    inhtml <- paste(fname,".html",sep="")
     inpdf <- paste(fname,".pdf",sep="")
 #
 #   Make the documents
-    knit(inRmd)
-    markdownToHTML(inmd, inhtml, options=c("use_xhml"))
-    pandoc(inhtml, format='latex')
+    render(inRmd,pdf_document())
     shell.exec(inpdf)
 }
