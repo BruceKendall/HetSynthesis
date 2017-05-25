@@ -1,0 +1,80 @@
+---
+title: "A new beginning"
+author: "Bruce Kendall"
+date: "September 13, 2016"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Based on conversation with Tim.
+
+The key idea is that past approaches to thinking about heterogeneity have either assumed a trait to be “fixed” (e.g., frailty sensu Vaupel, or the intercept in a growth function) or “dynamic” (iid each year) within an individual through development, and have initial value drawn from a distribution that is either independent (e.g., initial heterogeneity is purely environmental) of or dependent (at the extreme, clonal inheritance of a purely genetic trait) on parental traits.
+
+So the broad conceptual notion is to define a two-dimensional space with developmental autocorrelation on one axis and parent–offspring correlation on the other. But this needs some further unpacking. 
+
+- For example, a non-zero intercept in the parent-offspring relationship can easily occur (and if negative, will offset the response to selection if there is selection on the trait). 
+- Second, the developmental autocorrelation has to be normalized somehow—the obvious one is mean trait at age but that will be problematic if there is viability selection on the trait. 
+- Third, there can be an offset in the development function that might be relevant (so now we are up to four parameters). 
+- Fourth, the slope and correlation are synonymous only if development and/or inheritance doesn't change the trait variance (i.e., $\sigma_X = \sigma_Y$); I think this is generally assumed to be true in quantitative genetics, but for development it could only be true once individuals have reached an age where the autoregressive variance has converged (which may be quite a long time if the slope of the mean development function is close to one. Thus, we may need to characterize both the slope and the correlation [or residual variance]?
+
+Anyhow, if we can settle on an adequate characterization then maybe we can put various models on this space and use it to understand the diversity of results out there. For example:
+
+- Vaupel's frailty models assume individual heterogeneity in a quality trait that is fixed through development and (according to Tim; I don't recall this) has no p-o correlation (certainly the basic model in Kendall et al 2011 assumes this).
+- Simple QG models (and pop gen models) allow a non-zero p-o correlation but focus on traits that are only expressed once (and hence dev ac is irrelevant) or are fixed.
+- Traits that depend only on current environment (super-plastic) have zero dev ac and zero p-o correlation if environments are iid.
+- First-order Markov models and IPMs generate, in general, autocorrelation in age-standardized traits. For IPMs I think this is always positive. For discrete stages this can be positive or negative: for example, if there are two stages, then probabilities of staying in stage larger than 0.5 give positive ac, and values less than 0.5 give negative ac.
+- If the trait is under fecundity selection, then the trait distribution will shift through time as long as there is a positive p-o correlation that is not compensated for by a negative intercept in the inheritance function.
+
+If the trait is under viability selection then cohort selection on a trait with dev ac may introduce bias in empirical estimates of development or inheritance functions.
+
+Many of the above arguments also apply to heterogeneity in fitness that is driven by environmental heterogeneity. The main difference is that the "development function" for environments is less constrained, and the inheritance function doesn't have genetic mechanisms (instead it is much more likely to be frequency dependent, if the distribuiton of environment types is static).
+
+The question is, what do we do with this? 
+
+One potentially interesting observation is that the dynamic consequences of fixed heterogeneity and stochastic life history trajectories (individual stochasticity) aren't qualitatively different. Also, the way they influence among-individual variance in LRS is qualitatively similar.
+
+We already make the point in the Am Nat paper that the negative intercept counteracts directional change in response to a parent-offspring correlation; perhaps what can be said here is that if the trait is dynamic, such that we are not writing the inheritance function for the trait value as adults but rather going from adults to juveniles, then it is very easy to unknowingly create this offset. This would be a common issue in size-based IPMs, for example.
+
+
+Tulja et al (2009; Ecol Lett) say that the autocorrelation coefficient for a Markov model of transitions among states is $|\lambda_1|$, which is the subdominant eigenvalue of the transition matrix $\Psi$ (this matrix does not include mortality---hence the dominant eigenvalue is one---and is the transpose of the $G$ matrix of a typically formulated matrix model). This is simply stated without proof, and as a result I'm not sure of its limits. For example, it seems to assume that the population is at the stationary distribution of $\Psi$, so I'm not sure how it applies to an individual trajectory or in the presence of the censoring caused by stage-specific mortality.
+
+Let's try an example with the swan matrix in the paper:
+```{r}
+Psi <- matrix(c(.585, .198, .191, .026, 0,
+                0, .212, .419, .1, .269,
+                0, .113, .444, .25, .193,
+                0, .074, .342, .447, .137,
+                0, .111, .22, .056, .613),
+              5, 5, byrow = TRUE)
+eigen(Psi)$values
+```
+Note that what Tulja et al. actually calculate is the eigenvalue of the mature stages (2-5), because there is no going back to the immature stage.
+```{r}
+Psi <- matrix(c(.212, .419, .1, .269,
+                .113, .444, .25, .193,
+                .074, .342, .447, .137,
+                .111, .22, .056, .613),
+              4, 4, byrow = TRUE)
+eigen(Psi)$values
+```
+How would we do this by simulation? Let's give it a try:
+```{r}
+pinit <- c(.198, .191, .026, 0)/sum(c(.198, .191, .026, 0))
+G <- t(Psi)
+nsim <- 100
+nyr <- 500
+istate <- matrix(0, nyr, nsim)
+initdist <- rmultinom(nsim, 1, pinit)
+istate[1,] <- apply(initdist, 2, function(x) (1:4)[x==1])
+for (tt in 2:nyr) {
+  for (i in 1:4) {
+    ivec <- istate[tt-1,] == i
+    istate[tt, ivec] <- apply(rmultinom(sum(ivec), 1, Psi[i,]), 2, function(x) (1:4)[x==1])
+  }
+}  
+mean(apply(istate, 2, function(x) acf(x, plot = FALSE)$acf[2]))
+```
+Even asymptotically this is not giving Tulja's claim. Of course, there might be a problem with the simulation.

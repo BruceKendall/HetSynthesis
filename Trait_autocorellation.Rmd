@@ -2,7 +2,7 @@
 title: "Trait autocorrelation"
 author: "Bruce Kendall"
 date: "August 22, 2016"
-output: html_document
+output: pdf_document
 ---
 
 # Literature
@@ -12,19 +12,19 @@ In human demography, Keyfitz & Caswell (2005) give an example on p. 491 of "age-
 
 > The models discussed so far assume that each individual has a fixed frailty, assigned at birth and kept until death. An alternative conceptualization assumes that all individuals are born with the same frailty, and that frailty then changes with age (e.g., Yashin et al. 1994). Suppose there are discrete frailty states 0,1,...,n, representing increasing levels of frailty, and that frailty affects mortality as
 
->> μ(z, x) = μ0(x) + zμ. (19.4.12) 
+>> $\mu(z, x) = \mu_0(x) + z\mu$. (19.4.12) 
 
-> Here, μ is the rate at which mortality increases with increased frailty. Frailty
+> Here, $\mu$ is the rate at which mortality increases with increased frailty. Frailty
 changes over time, either increasing according to 
 
-> P(z(t+dt)=z+1)=(γ0 +zγ)dt (19.4.13)
+> $P(z(t+dt)=z+1)=(\gamma0 +z\gamma)dt$ (19.4.13)
 
-> P(z(t+dt)=z)=1−(γ0 +zγ)dt. (19.4.14)
+> $P(z(t+dt)=z)=1-(\gamma0 +z\gamma)dt$. (19.4.14)
 
-> Here, γ is the rate of increase in frailty.
+> Here, $\gamma$ is the rate of increase in frailty.
 
 > This model leads to a system of differential equations that can be solved
-for the probability distribution of individuals among frailty classes at any age. From this, as n → ∞, the observed mortality is
+for the probability distribution of individuals among frailty classes at any age. From this, as n → $\infty$, the observed mortality is
 $\bar{\mu}(x) = \mu_0 + \frac{\mu \gamma_0 \left(1 - e^{(\gamma + \mu) x}\right)}{\mu + \gamma e^{(\gamma + \mu) x}}$ , (19.4.15)
 
 > which produces a logistic pattern of observed mortality (Yashin et al. 1994).
@@ -49,7 +49,7 @@ zmin <- -6 * sigma0
 zmax <- 6 * sigma0
 sigma_eps <- sqrt((1 - rho^2) * sigma0^2)
 gr1 <- makeGrowthObj(Formula = sizeNext ~ -1 + size, coeff = c(rho, sigma_eps), sd = sigma_eps)
-sv1 <- makeSurvObj(Formula = surv ~ size, coeff = c(int, 1,1))
+sv1 <- makeSurvObj(Formula = surv ~ size, coeff = c(int, 1))
 # There seems to be a problem in which the specified coefficient is not reliably assigned
 sv1@fit$coefficients[1] <- 1
 Pmatrix <- makeIPMPmatrix(nBigMatrix = mesh_size, minSize = -6*sigma0, maxSize = 6*sigma0, growObj = gr1, survObj = sv1, correction = "constant")
@@ -120,7 +120,7 @@ arIPM <- function (rho, sigma0, int = 0, Fec = 0.4, mesh_size = 100,
 ```
 Now let's run it.
 
-```{r gen_data, cache=TRUE}
+```{r gen_data, cache=TRUE, warning=FALSE}
 rho_list <- c(0, 0.3, 0.6, 0.9, 0.9999)
 sd_list <- seq(0.01, 4, 0.01)
 num_rho <- length(rho_list)
