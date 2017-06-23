@@ -1,0 +1,88 @@
+---
+title: "Model categorization"
+author: "Bruce E. Kendall"
+date: "June 23, 2017"
+output: pdf_document
+---
+
+We want to put existing models into categories according to our scheme. Here are the variables I think want to record; note that the length of this list indicates why the field is so confused!
+
+## Bibliographic
+- Authors
+- Year
+- Publication (Journal/volume/pages)
+- Full citation (?)
+
+We want to keep year as a separate column so we can, e.g., look at trends in what people are looking at.
+
+## Application
+- General theory
+- Particular population
+
+## Outcome variable(s)
+Probably each of these as a T/F, as a study may look at multiple outcomes:
+
+- Phenotype
+- Fitness components
+    - Annual Survival
+    - Annual Reproduction
+    - Expected Longevity
+    - $R_0$ (Expected Lifetime reproductive success)
+- Realized demography
+    - Annual Survival
+    - Annual Reproduction
+    - Longevity
+    - Lifetime reproductive success
+- Expected transition rates between stages
+- Realized transition rates between stages
+- Realized population growth rate
+- Expected population growth rate (e.g., $\lambda$)
+- Equilibrium abundance
+- Other population characteristics
+
+These are probably mutually exclusive, so could be levels of a categorical variable:
+
+- Variation among individuals
+- Variation among replicate populations
+- Mean population outcomes
+
+## Source(s) of heterogeneity
+Probably each of these as a T/F, as a study may look at multiple sources:
+
+- Genetic variation
+- Epigenetic variation, maternal effects, etc.
+- Observed phenotypic variation
+- Unobserved phenotypic variation
+- Variation in past deomographic performance or life history
+- Age
+- Stage
+- Environmental variation
+- Fitness variation (e.g., for studies [such as our early work] that just assert variation in a fitness component without specifying a mechanism)
+
+## Heterogeneity correlations
+Probably each of these as a T/F (or perhaps -/0/+), as a study may have multiple sources:
+
+- Parent--offspring correlations
+- Correlations between traits or fitness components within an individual
+- Correlations between contemporary individuals
+    - Shared genes
+    - Shared environments
+    - Time within stage
+- Autocorrelation within individuals 
+    - Frailty and other "fixed" traits
+    - Autocorrelation in environmental conditions
+    - Traits with explicit autocorrelation (e.g., growth autocorrelation)
+    - Traits with implicit autocorrelation (e.g., size at age when growth is stochastic)
+
+## Outcome correlations
+This is Engen et al's "demographic covariance;" it gets at, e.g., shared fates among nestmates due to nest predation, fates of dependent offspring when parents die, etc. I don't think we need to classify this into subcategories, but just note its presence. Elsewhere we can talk about the way in which heterogeneity can create patterns that "look" like demographic covariance in a homogenous population (e.g., the review of our first paper).
+
+
+## Other thoughts
+In many cases the authors will not have classified their model in this way, or even recognized implicit correlation structure in their model. Thus, we may need to justify and explain our classification.
+
+Furthermore, the presence of absence of (unmodeled) heterogeneity of a particular structure when a model is applied to a specific population will depend on how well the model assumptions are supported (I'm thinking in particular of the Markov assumption for stochastic stage-structured models). In general, we will not be able to evaluate this. Do we mark these as "possible"?
+
+More generally, I guess we have heterogeneity that can be either: acknowledged; unacknowledged but definitely present; or unacknowledged but possibly present.
+
+Finally, what do we do with systemic issues? For example, all size-based IPMs create autocorrelated heterogeneity in residual size-at-age; if the assumption of iid growth-at-size is valid, then this is a true reflection of the population. No analysis has yet recognized this, so it has not been studied. Studies that look at the sensitivity of $\lambda$ to the growth parameters are seeing effects of this, but are not linking to heterogeneity in any systematic way. A similar example (albeit one that is slightly better understood, if one reads the right literature) is the effect of violations of the Markov assumption in stage-structured matrix models (or, for that matter, continuous-time stage structured models with constant transition rates). I guess we should have a separate table summarizing these, and of course we need elaborations in text. Maybe in the full model we can put generic versions in for completeness.
