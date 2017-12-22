@@ -1,0 +1,118 @@
+---
+title: "Age within stage"
+author: "Bruce E. Kendall"
+date: "12/22/2017"
+output: pdf_document
+---
+
+Here we look at the case where an individual's time within stage affects its probability of maturing to the next stage. 
+The most extreme is the "stage for age" substitution (as in the sea turtle models, and as explicated in Ebert's book), where each individual spends a fixed amount of time in the stage.
+Mathematically, this can be represented as 
+\begin{equation}
+G(t_S) = \begin{cases}
+          0, & t_S < T_S \\
+          1, & t_S = T_S,
+        \end {cases}
+\end{equation}
+where $t_S$ is the number of years within the stage, $T_S$ is the number of years to reach stage maturation, and $G$ is the maturation probability.
+
+More generally, $G$ can be a continuous function of $t_S$; typically it will be increasing. 
+
+Stage structured matrix models implicitly assume $G(t_S) = g$, independent of time within stage.
+
+Perry de Valpine has already shown how the shape of $G$ affects the variance in time to complete the stage, which has knock-on effects on variance in time to maturity, survival to maturity, LRS, etc. (Need to check what he actually looked at.) 
+Here, we look at how a non-constant $G$ creates within-stage with a certain structure that reduced the variance in the fraction of individuals maturing, relative to a matrix model.
+The reduction in variance is not novel (although seems to be pointedly ignored by Caswell and others in claiming that "individual stochasticity" is responsible for all the variance in LRS), but this analysis allows an explicit link to our work on demographic heterogeneity.
+To make the model explicitly stochastic (and to prevent Caswell's ability from righting it off as a "meaningless" deterministic model) we allow the size of each cohort recruiting to the stage to be stochastic.
+
+# Two-year stage-for-age
+For simplicity of explication, we start with a case where each individual spends exactly 2 years in the stage before maturing.
+Let the number of 1st-year individuals in year $t$ be $x_t$, and second-year be $y_t$. 
+Each year, each individual survives with probability $p$.
+Thus, $y_t$ is binomially distributed with size $x_{t-1}$ and probability $p$; and the number maturing at the end of the year, $m_t$, is binomially distributed with size $y_t$ and probability $1-p$.
+The fraction of individuals ready to mature (contingent on survival) is 
+\begin{equation}
+z_t = \frac{y_t}{x_t+y_t}.\end{equation}
+
+We assume that the population is at a stochastic steady distribution (e.g., due to density dependence), so that the $x_t$ are drawn from an iid distribution with mean $E[X]$ and variance $V(X)$. 
+Let's find the mean and variance of $z_t$.
+For convenience we'll drop the subscript except where critical.
+
+Start by Taylor expanding:
+\begin{equation}
+z(x,y) \approx z(E[X], E[Y]) + \frac{\partial z}{\partial x} (x - E[X]) +
+                            \frac{\partial z}{\partial y} (y - E[Y]) +
+           \frac{\partial z}{\partial x} \frac{\partial z}{\partial y} (x - E[X]) (y - E[Y]) +
+           \frac{1}{2}\frac{\partial^2 z}{\partial x^2} (x - E[X])^2 +
+           \frac{1}{2}\frac{\partial^2 z}{\partial y^2} (y - E[Y])^2,
+\end{equation}
+where the derivatives are evaluated at $x=E[x]$ and $y=E[y]$. 
+When we take the expectation, the linear terms fall away:
+\begin{equation}
+E[Z] \approx z(E[X], E[Y]) + 
+           \frac{\partial z}{\partial x} \frac{\partial z}{\partial y} cov(X,Y) +
+           \frac{1}{2}\frac{\partial^2 z}{\partial x^2} V(X) +
+           \frac{1}{2}\frac{\partial^2 z}{\partial y^2} V(Y).
+\end{equation}
+Because $y_t$ depends on $x_{t-1}$, and $x_t$ and $x_{t-1}$ are independent, $cov(X,Y) = 0$, and thus
+\begin{equation}
+E[Z] \approx \frac{E[Y]}{E[X] + E[Y]} + 
+           \frac{1}{2}\frac{\partial^2 z}{\partial x^2} V(X) +
+           \frac{1}{2}\frac{\partial^2 z}{\partial y^2} V(Y).
+\end{equation}
+
+Now start calculating some terms.
+$$
+\begin{aligned}
+z &= \frac{y}{x+y}\\
+\frac{\partial z}{\partial x} &= \frac{-y}{(x+y)^2}\\
+\frac{\partial^2 z}{\partial x^2} &= \frac{2y(x+y)}{(x+y)^4}\\
+    &= \frac{2y}{(x+y)^3}\\
+\frac{\partial z}{\partial y} &= \frac{(x+y)-y}{(x+y)^2}\\
+    &= \frac{x}{(x+y)^2}\\
+\frac{\partial^2 z}{\partial y^2} &= \frac{(x+y)^2-2x(x+y)}{(x+y)^4}\\
+    &= \frac{y-x}{(x+y)^3}\\
+\end{aligned}
+$$
+Now, $E[Y] = p E[X]$, so $E[X]+E[Y] = (1+p)E[X]$ and $E[Y]/(E[X]+E[Y])=p/(1+p)$.
+Plugging these into the derivatives gives
+$$
+\begin{aligned}
+\frac{\partial^2 z}{\partial x^2} &=  \frac{2pE[X]}{(1+p)^3 E[X]^3}\\
+    &= \frac{2p}{(1+p)^3 E[X]^2}\\
+\frac{\partial^2 z}{\partial y^2} &= \frac{-(1-p)E[X]}{(1+p)^3 E[X]^3}\\
+    &= \frac{-(1-p)}{(1+p)^3 E[X]^2}
+\end{aligned}
+$$
+Finally, we need $V(Y)$. Letting $P(y)$ be the probability that $y_t= y$, we write out the probability distribution for $y_t$ and then take the appropriate expectations:
+$$
+\begin{aligned}
+P(y) &= \sum_{x\ge y} P(x) {x \choose y} p^y (1-p)^{x-y}\\
+E[Y] &= \sum_y y P(y)\\
+  &= \sum_y y \sum_{x\ge y} P(x) {x \choose y} p^y (1-p)^{x-y}\\
+  &= \sum_x P(x) \sum_{y \le x} y {x \choose y} p^y (1-p)^{x-y}\\
+  &= \sum_x P(x) px\\
+  &= p E[X]\\
+E[Y^2] &= \sum_y y^2 P(y)\\
+  &= \sum_y y^2 \sum_{x\ge y} P(x) {x \choose y} p^y (1-p)^{x-y}\\
+  &= \sum_x P(x) \sum_{y \le x} y^2 {x \choose y} p^y (1-p)^{x-y}\\
+  &= \sum_x P(x) [E[y|x]^2 - V(y|x)]\\
+  &= \sum_x P(x) [(px)^2 - x p(1-p)]\\
+  &= p^2 E[X^2] - p(1-p) E[X]\\
+V(Y) &= E[Y]^2 - E[Y^2]\\
+  &= p^2 E[X]^2 - p^2 E[X^2] + p(1-p) E[X]\\
+  &= p^2 V(X) + p(1-p) E[X]
+\end{aligned}
+$$
+
+So, finally, we can write
+$$
+\begin{aligned}
+E[Z] &\approx \frac{p}{1+p} + \frac{1}{2}\frac{2p}{(1+p)^3 E[X]^2}V(X)+\frac{1}{2}\frac{-(1-p)}{(1+p)^3 E[X]^2}(p^2 V(X) + p(1-p) E[X])\\
+  &=\frac{p}{1+p} + \frac{1}{2}\frac{2p - p^2 + p^3}{(1+p)^3 E[X]^2}V(X) -\frac{1}{2}\frac{p(1-p)^2}{(1+p)^3 E[X]^2}E[X]\\
+  &= \frac{p}{1+p} \left[1 + \frac{1}{2} \left(\frac{p^2 - p + 2}{(1+p)^2} \frac{V(X)}{E[X]^2} - \frac{(1-p)^2}{(1+p)^2 E[X]}\right) \right] \\
+  &= \frac{p}{1+p} \left[1 + \frac{(p^2 - p + 2) V(X) - (1-p)^2 E[X]}{2(1+p)^2 E[X]^2}  \right] \\
+\end{aligned}
+$$
+
+Next step: the variance of Z.
