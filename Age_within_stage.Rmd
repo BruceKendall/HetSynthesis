@@ -111,8 +111,55 @@ $$
 E[Z] &\approx \frac{p}{1+p} + \frac{1}{2}\frac{2p}{(1+p)^3 E[X]^2}V(X)+\frac{1}{2}\frac{-(1-p)}{(1+p)^3 E[X]^2}(p^2 V(X) + p(1-p) E[X])\\
   &=\frac{p}{1+p} + \frac{1}{2}\frac{2p - p^2 + p^3}{(1+p)^3 E[X]^2}V(X) -\frac{1}{2}\frac{p(1-p)^2}{(1+p)^3 E[X]^2}E[X]\\
   &= \frac{p}{1+p} \left[1 + \frac{1}{2} \left(\frac{p^2 - p + 2}{(1+p)^2} \frac{V(X)}{E[X]^2} - \frac{(1-p)^2}{(1+p)^2 E[X]}\right) \right] \\
-  &= \frac{p}{1+p} \left[1 + \frac{(p^2 - p + 2) V(X) - (1-p)^2 E[X]}{2(1+p)^2 E[X]^2}  \right] \\
+  &= \frac{p}{1+p} \left[1 +  \frac{(1-p)^2 +(1+p)}{2(1+p)^2} \frac{V(X)}{E[X]^2} - \frac{(1-p)^2}{2(1+p)^2} \frac{1}{E[X]}   \right] \\
+\end{aligned}
+$$
+The first term is what you'd get in a purely deterministic world; the second term is the nonlinear averaging over variability in $x$ (notice that it depends on CV$^2$($X$)), and the third term is the nonlinear averaging over the binomial variability of $y_t | x_{t-1}$. 
+The fact that the units of $X$ don't cancel in the last term is moderately disturbing; is is a consequence of the fact that the binomial variance has apparent units of $N$ instead of $N^2$, which in turn is a consequence of the fact that the Bernoulli variance has terms in $1^2$ which get turned into $1$.
+
+Now we turn to the variance of Z. 
+This requires calculating $E[Z^2]$.
+We proceed with Taylor expansion again; the only thing we need to change from before are the derivatives.
+$$
+\begin{aligned}
+z^2 &= \frac{y^2}{(x+y)^2}\\
+\frac{\partial z^2}{\partial x} &= \frac{-2y^2(x+y)}{(x+y)^4}\\
+  &= \frac{-2y^2}{(x+y)^3}\\
+\frac{\partial^2 z^2}{\partial x^2} &= \frac{6y^2(x+y)^2}{(x+y)^6}\\
+    &= \frac{6y^2}{(x+y)^4}\\
+\frac{\partial z^2}{\partial y} &= \frac{2y(x+y)^2-2y^2(x+y)}{(x+y)^4}\\
+    &= \frac{2xy}{(x+y)^3}\\
+\frac{\partial^2 z^2}{\partial y^2} &= \frac{2x(x+y)^3-6xy(x+y)^2}{(x+y)^6}\\
+    &= \frac{2x(x-2y)}{(x+y)^4}\\
 \end{aligned}
 $$
 
-Next step: the variance of Z.
+Evaluating these at the expected values of $x$ and $y$ gives
+$$
+\begin{aligned}
+\frac{\partial^2 z^2}{\partial x^2} &= \frac{6p^2 E[X]^2}{(1+p)^4 E[X]^4}\\
+    &= \frac{6p^2}{(1+p)^4 E[X]^2}\\
+\frac{\partial^2 z^2}{\partial y^2} &= \frac{2(1-2p)E[X]^2}{(1+p)^4 E[X]^4}\\
+    &= \frac{2(1-2p)}{(1+p)^4 E[X]^2}
+\end{aligned}
+$$
+So then:
+$$
+\begin{aligned}
+E[Z^2] &\approx \frac{p^2}{(1+p)^2} + \frac{1}{2}\frac{6p^2}{(1+p)^4 E[X]^2}V(X) + \frac{1}{2}\frac{2(1-2p)}{(1+p)^4 E[X]^2}(p^2 V(X) + p(1-p) E[X])\\
+  &= \frac{p^2}{(1+p)^2} \left[1 + \frac{2(2-p)}{(1+p)^2}\frac{V(X)}{E[X]^2} + \frac{(1-2p)(1-p)}{p(1+p)^2} \frac{1}{E[X]} \right]
+\end{aligned}
+$$
+
+Thus we have
+$$
+\begin{aligned}
+V(Z) &= E[X]^2 - E[X^2]\\
+  &\approx  \frac{p^2}{(1+p)^2} \left[1 + \frac{(1-p)^2 +(1+p)}{(1+p)^2} \frac{V(X)}{E[X]^2} - \frac{(1-p)^2}{(1+p)^2} \frac{1}{E[X]} + \frac{(1-p)^4 +(1-p)^2(1+p)}{2(1+p)^4} \frac{V(X)}{E[X]^3} \right. \\
+  & \left. \qquad\qquad\qquad + \frac{[(1-p)^2 +(1+p)]^2}{4(1+p)^4} \frac{V(X)^2}{E[X]^4} + \frac{(1-p)^4}{4(1+p)^4} \frac{1}{E[X]^2} \right] \\
+  &  \qquad - \frac{p^2}{(1+p)^2} \left[1 + \frac{2(2-p)}{(1+p)^2}\frac{V(X)}{E[X]^2} + \frac{(1-2p)(1-p)}{p(1+p)^2} \frac{1}{E[X]} \right] \\
+  &= \frac{p^2}{(1+p)^2} \left[ \frac{p^2-3}{(1+p)^2} \frac{V(X)}{E[X]^2} - \frac{5p-p^2 }{(1+p)^2} \frac{1}{E[X]} + \frac{(1-p)^4 +(1-p)^2(1+p)}{2(1+p)^4} \frac{V(X)}{E[X]^3} \right. \\
+  & \left. \qquad\qquad\qquad  + \frac{[(1-p)^2 +(1+p)]^2}{4(1+p)^4} \frac{V(X)^2}{E[X]^4} + \frac{(1-p)^4}{4(1+p)^4} \frac{1}{E[X]^2}\right]
+\end{aligned}
+$$
+How to make sense of this, I'm not sure. But one thing that is clear, the fraction of individuals that is ready to mature has a lot of sources of variability, in contrast to the stochastic matrix models where the only variability is binomial sampling of $x+y$ with fixed probability $g$.
