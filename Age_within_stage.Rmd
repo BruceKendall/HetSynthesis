@@ -156,7 +156,7 @@ $$
 Thus we have
 $$
 \begin{aligned}
-V(Z) &= E[X]^2 - E[X^2]\\
+V(Z) &= E[Z]^2 - E[Z^2]\\
   &\approx  \frac{p^2}{(1+p)^2} \left[1 + \frac{(1-p)^2 +(1+p)}{(1+p)^2} \frac{V(X)}{E[X]^2} - \frac{(1-p)^2}{(1+p)^2} \frac{1}{E[X]} + \frac{(1-p)^4 +(1-p)^2(1+p)}{2(1+p)^4} \frac{V(X)}{E[X]^3} \right. \\
   & \left. \qquad\qquad\qquad + \frac{[(1-p)^2 +(1+p)]^2}{4(1+p)^4} \frac{V(X)^2}{E[X]^4} + \frac{(1-p)^4}{4(1+p)^4} \frac{1}{E[X]^2} \right] \\
   &  \qquad - \frac{p^2}{(1+p)^2} \left[1 + \frac{2(2-p)}{(1+p)^2}\frac{V(X)}{E[X]^2} + \frac{(1-2p)(1-p)}{p(1+p)^2} \frac{1}{E[X]} \right] \\
@@ -166,4 +166,25 @@ V(Z) &= E[X]^2 - E[X^2]\\
 $$
 How to make sense of this, I'm not sure. For what its worth, the 4th and 5th terms above---the 2nd line in the expression for $V(Z)$---are squares of the 2nd and 3rd expressions for $E[Z]$. But one thing that is clear, the fraction of individuals that is ready to mature has a lot of sources of variability, in contrast to the stochastic matrix models where the only variability is binomial sampling of $x+y$ with fixed probability $g$.
 
+I think that the best analog of the variance in the number ready to mature in the Markov model is $(1/N) g(1-g)$, where we estimate $N$ as $E[X]+E[Y]$ and $g$ as $E[Z]$.
+So we have:
+$$
+\begin{aligned}
+V_M(Z) &= \frac{1+p}{E[X]}  (E[Z] - E[Z]^2)\\
+  &= \frac{1+p}{E[X]} \left( \frac{p}{1+p} \left[1 +  \frac{(1-p)^2 +(1+p)}{2(1+p)^2} \frac{V(X)}{E[X]^2} - \frac{(1-p)^2}{2(1+p)^2} \frac{1}{E[X]}   \right]\right.\\
+  & \qquad \qquad \qquad -\frac{p^2}{(1+p)^2} \left[1 + \frac{(1-p)^2 +(1+p)}{(1+p)^2} \frac{V(X)}{E[X]^2} - \frac{(1-p)^2}{(1+p)^2} \frac{1}{E[X]} + \frac{(1-p)^4 +(1-p)^2(1+p)}{2(1+p)^4} \frac{V(X)}{E[X]^3} \right. \\
+  & \left.\left. \qquad\qquad\qquad\qquad\qquad \qquad+ \frac{[(1-p)^2 +(1+p)]^2}{4(1+p)^4} \frac{V(X)^2}{E[X]^4} + \frac{(1-p)^4}{4(1+p)^4} \frac{1}{E[X]^2} \right]\right)\\
+  &= \frac{p}{E[X]} \left(\left[1 - \frac{p}{1+p}\right]\left[1 +  \frac{(1-p)^2 +(1+p)}{2(1+p)^2} \frac{V(X)}{E[X]^2} - \frac{(1-p)^2}{2(1+p)^2} \frac{1}{E[X]}   \right] \right.\\
+  & \qquad \qquad  +\frac{p}{1+p} \left[\frac{(1-p)^2 +(1+p)}{(1+p)^2} \frac{V(X)}{E[X]^2} - \frac{(1-p)^2}{(1+p)^2} \frac{1}{E[X]}\right]\\
+  & \left.\qquad \qquad  -\frac{p}{1+p} \left[\frac{(1-p)^4 +(1-p)^2(1+p)}{2(1+p)^4} \frac{V(X)}{E[X]^3} + \frac{[(1-p)^2 +(1+p)]^2}{4(1+p)^4} \frac{V(X)^2}{E[X]^4} + \frac{(1-p)^4}{4(1+p)^4} \frac{1}{E[X]^2}\right]\right)\\
+  &= \frac{p}{E[X]} \left(\frac{1}{1+p} + \left[\frac{(1-p)^2 +(1+p)}{(1+p)^2} \frac{V(X)}{E[X]^2} - \frac{(1-p)^2}{(1+p)^2} \frac{1}{E[X]}\right] \right.\\
+  & \left.\qquad \qquad  -\frac{p}{1+p} \left[\frac{(1-p)^4 +(1-p)^2(1+p)}{2(1+p)^4} \frac{V(X)}{E[X]^3} + \frac{[(1-p)^2 +(1+p)]^2}{4(1+p)^4} \frac{V(X)^2}{E[X]^4} + \frac{(1-p)^4}{4(1+p)^4} \frac{1}{E[X]^2}\right]\right)\\
+   &= \frac{p}{E[X]} \left(\frac{1}{1+p} + \left[\frac{(1-p)^2 +(1+p)}{(1+p)^2} \frac{V(X)}{E[X]^2} - \frac{(1-p)^2}{(1+p)^2} \frac{1}{E[X]}\right] \right.\\
+    & \left.\qquad \qquad  -\frac{1+p}{p} \left[V(Z) - \frac{p^2}{(1+p)^2} \left( \frac{p^2-3}{(1+p)^2} \frac{V(X)}{E[X]^2} - \frac{5p-p^2 }{(1+p)^2} \frac{1}{E[X]}\right) \right]\right)\\
+       &= \frac{p}{E[X]} \left(\frac{1}{1+p} + \left[\frac{(1-p)^2 +(1+p)}{(1+p)^2} \frac{V(X)}{E[X]^2} - \frac{(1-p)^2}{(1+p)^2} \frac{1}{E[X]}\right] \right.\\
+    & \left.\qquad \qquad  -\frac{1+p}{p} V(Z) + \frac{p}{1+p} \left( \frac{p^2-3}{(1+p)^2} \frac{V(X)}{E[X]^2} - \frac{5p-p^2 }{(1+p)^2} \frac{1}{E[X]}\right) \right)\\
+       &= \frac{p}{E[X]} \left(\frac{1}{1+p}\left[1+\frac{2(p^3-p+1)}{(1+p)^2} \frac{V(X)}{E[X]^2} - \frac{4p^2 - p+1}{(1+p)^2} \frac{1}{E[X]}\right] -\frac{1+p}{p} V(Z)\right)\\
 
+\end{aligned}
+$$
+The question is, is this larger or smaller than $V(Z)$?
