@@ -23,7 +23,7 @@ More generally, $G$ can be a continuous function of $t_S$; typically it will be 
 Stage structured matrix models implicitly assume $G(t_S) = g$, independent of time within stage.
 
 Perry de Valpine has already shown how the shape of $G$ affects the variance in time to complete the stage, which has knock-on effects on variance in time to maturity, survival to maturity, LRS, etc. (Need to check what he actually looked at.) 
-Here, we look at how a non-constant $G$ creates \textcolor{red}{(BRUCE: something missing here. ``Variance,'' perhaps? Or something deeper or at least more complicated?)} within-stage with a certain structure that reduced the variance in the fraction of individuals maturing, relative to a matrix model.
+Here, we look at how a non-constant $G$ creates within-stage heterogeneity with a certain structure that reduced the variance in the fraction of individuals maturing, relative to a matrix model.
 The reduction in variance is not novel  (although seems to be pointedly ignored by Caswell and others in claiming that "individual stochasticity" is responsible for all the variance in LRS), but this analysis allows an explicit link to our work on demographic heterogeneity.
 To make the model explicitly stochastic (and to prevent Caswell's ability from writing it off as a "meaningless" deterministic model) we allow the size of each cohort recruiting to the stage to be stochastic.
 
@@ -164,6 +164,6 @@ V(Z) &= E[X]^2 - E[X^2]\\
   & \left. \qquad\qquad\qquad  + \frac{[(1-p)^2 +(1+p)]^2}{4(1+p)^4} \frac{V(X)^2}{E[X]^4} + \frac{(1-p)^4}{4(1+p)^4} \frac{1}{E[X]^2}\right]
 \end{aligned}
 $$
-How to make sense of this, I'm not sure. But one thing that is clear, the fraction of individuals that is ready to mature has a lot of sources of variability, in contrast to the stochastic matrix models where the only variability is binomial sampling of $x+y$ with fixed probability $g$.
+How to make sense of this, I'm not sure. For what its worth, the 4th and 5th terms above---the 2nd line in the expression for $V(Z)$---are squares of the 2nd and 3rd expressions for $E[Z]$. But one thing that is clear, the fraction of individuals that is ready to mature has a lot of sources of variability, in contrast to the stochastic matrix models where the only variability is binomial sampling of $x+y$ with fixed probability $g$.
 
-\textcolor{red}{The 4th and 5th terms above - the 2nd line in the expression for $V(Z)$ - are squares of the 2nd and third expressions for $E[Z]$.So maybe explicating this is slightly easier. Maybe.).}
+
