@@ -75,7 +75,7 @@ Now we turn this into a function:
 ```{r}
 arIPM <- function (rho, sigma0, int = 0, Fec = 0.4, mesh_size = 100, 
                    zmin = -6 * sigma0, zmax = 6 * sigma0, plot.it = FALSE) {
-  sigma_eps <- sqrt((1 - rho^2) * sigma0^2)
+  sigma_eps <- sqrt((1 - rho^2)) * sigma0
   gr1 <- makeGrowthObj(Formula = sizeNext ~ -1 + size, coeff = c(rho, sigma_eps), 
                        sd = sigma_eps)
   sv1 <- makeSurvObj(Formula = surv ~ size, coeff = c(int, 1))
@@ -121,7 +121,7 @@ arIPM <- function (rho, sigma0, int = 0, Fec = 0.4, mesh_size = 100,
 Now let's run it.
 
 ```{r gen_data, cache=TRUE, warning=FALSE}
-rho_list <- c(0, 0.3, 0.6, 0.9, 0.9999)
+rho_list <- c(0, 0.3, 0.6, 0.9, 0.9999) 
 sd_list <- seq(0.01, 4, 0.01)
 num_rho <- length(rho_list)
 num_sd <- length(sd_list)
@@ -139,7 +139,7 @@ results <- data.frame(rho = rho_list,
 for (rho in rho_list) {
   print(rho)
   for (sigma0 in sd_list) {
-    temp <- arIPM(rho, sigma0)
+    temp <- arIPM(rho, sigma0, mesh_size = 100)
     results <- rbind(results, cbind(data.frame(rho=rho, sigma0=sigma0),
                                     as.data.frame(temp[1:6])))
   }
