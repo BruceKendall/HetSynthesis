@@ -1,0 +1,69 @@
+---
+title: "Models"
+author: "Bruce E. Kendall"
+date: "6/23/2019"
+output: pdf_document
+---
+
+Here is a list of models that we have published, played with, thought about, and/or despaired over.
+
+# Among-individual correlations and stochastic demography
+Our original 3 papers looked at heterogeneity's effect on the variance due to demographic stochasticity in a single demographic process (Bernoulli survival or Poisson fecundity). We looked at two cases: 
+
+(@) Trait assignment is deterministic. At least in the case of two potential trait values (the assumption of our analysis), this can be thought of as a trait covariance (in the sense defined by Engen et al.) of $-\sigma^2/(N-1)$, where $\sigma^2$ is the trait variance and $N$ is the population size.
+(@) Trait assignment is *iid*. This gives an expected trait covariance of zero.
+
+Possible extensions:
+
+(@) Arbitrary values of the trait correlation. With more than two trait values, or even just unequal numbers in each class, we may get a different negative correlation; spatial autocorrelation (you are similar to your neighbor) or structure within families (you are similar to your siblings) would give positive correlations, which should increase the demographic stochasticity variance relative to the iid case.
+(@) 2- or 3-parameter distributions, where the demographic variance isn't a unique function of the mean.
+
+Hartemink and Caswell have an analagous set of models that focus on the expected among-individual variance in fate as the outcome. This appears not to depend on among-individual correlations in trait. However, there may be two relevant pieces:
+
+(@) The trait correlations will affect the sampling distribution of the realized fate variance, which is relevant if the goal is to do null hypothesis testing. This may be a reframing of the estimation bias in the papers from Cam's group.
+(@) H&C decompose the fate variance into contributions from the "stochastic variance" and the "heterogeneity variance." Depending on the stochastic process, heterogeneity can affect the value of the stochastic variance (even if, in many cases, it is exactly compensated by the heterogeneity variance)---see, e.g., the `Stoch_het` document. Trait correlations *might* play a role here.
+(@) More broadly, there may be some ambiguity in their work about whether the distribution of trait values is itself a stochastic process.
+
+# Within-individual autocorrelation and deterministic demography
+(@) The frailty paper shows how cohort selection increases $\lambda$, with or without [simplistic] parent-offspring correlations. Discrete-time model
+(@) Joe's density dependence paper shows that survival heterogeneity affects the equilibrium abundance. Continuous-time model. This model has DD in the birth rate but Bruce has shown that it also works with DD mortality.
+(@) Bruce has shown that cohort selection increases $\lambda$ even if the autocorrelation is < 1
+
+# Within-individual autocorrelation and stochastic demography
+(@) Multi-type branching process and extinction risk (work that Masami and Theresa did). For survival heterogeneity this was dominated by cohort selection's effect on mean growth rate; birth rate heterogeneity created conditions for an extinction vortex.
+(@) Among-individual distributions of lifespans and LRS (Hartemink & Caswell's framework)
+
+# Growth stochasticity and heterogeneity
+(@) Bruce has shown how stochasticity in growth-at-size can give rise to heterogeneity in size-at-age, and autocorrelation in the demeaned residual-size-at-age. If survival is size-dependent, this can give rise to cohort selection effects, suggesting that lambda should be increasing with the growth rate variance.
+
+(@) There's a (perhaps small) literature on persistent individual differences in growth rate (e.g., Jamie's dissertation), as well as autocorrelation in growth residuals (e.g., Pfister & Peacor; I'm not sure if these control intelligently for individual and year). Are there any models that incorporate this? 
+
+# Non-markovian maturation from stage
+(@) If maturation rate actually depends on time within stage, the simple Morkovian approximation to the stage dynamics will overestimate the variance in stage duration---this can be interpreted as failing to account for the correlated within-stage heterogeneity. Bruce started working this up for a 2-year stage in `Age_within_stage`.
+
+# Heterogeneity and density dependence
+(@) Joe's Theoretical Ecology paper. The density dependence is phenomenological, and applies equally to both phenotypes. It incorporates within-individual perfect autocorrelation, and parameters to allow parent-offspring correlation.
+
+(@) One extension could be to explicitly include the resource dynamics, injecting more mechanism into both the density dependence and the nature of the heterogeneous trait. An extreme version of this could be a DEB-based PSPM (Bruce has thought about this...)
+
+# Density and frequency dependence
+(@) The behavioral syndromes paper. In addition to within-individual autocorrelation, it had within-individual tradeoffs (between birth and survival rates)
+
+Possible extensions:
+
+(@) More general models of frequency and density dependence, as these seem to be mechanisms that both maintain genetic diversity and can generate complex dynamics
+
+# Stochasticity and heterogeneity in movement
+(@) Joe's BMB paper on heterogeneity in dispersal kernels
+(@) Ellner had a contemporaneous paper on stochasticity in dispersal
+(@) Bruce is working on dispersal stochasticity in the context of Jenn's Arabidosis experiments
+(@) Berkley et al showed that dispersal stochasticity can promote coexistence via a storage effect.
+(@) Dispersal evolution/spatial sorting: a big literature here
+
+# Heterogeneity and interspecific competition
+(@) Joe did quite a bit of work on this, using the notion of an interaction kernel along a one-dimensional niche axis; heterogeneity involved one of the species having two types centered on different locations on the niche axis. I think the analysis was completed (with a nice summary figure) but never written up.
+
+(@) Simon Hart had a paper (with what Bruce recalls thinking was a flawed model) showing that intraspecific heterogeneity makes coexistence harder. It has been widely cited, and there seems to be a largish literature on various aspects of individual heterogeneity in competitive communities.
+
+# Interaction between cohort selection and natural selection
+(@) Overdominance model that Bruce wrote up in Oxford. Even in a semelparous plant, cohort selection changes the equilibrium allele frequency in a gene that codes for annual survival.
