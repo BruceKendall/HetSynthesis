@@ -28,3 +28,15 @@ Continuous time:
 Throughout the book, Charlesworth distinguishes between males and females; analagous demographic parameters (and derived quantities) for males are indicated with an asterisk.
 
 The remainder of chapter 1 is devoted to the dynamics of the age-structured models, under various assumptions about time-dependence and density-dependence in the parameters.
+
+# Genetic definitions (chapter 2)
+* $A_i$ is the $i$'th allele at a locus. There are $m$ total alleles (p. 72)
+* $A_i A_j$ is a genotype of an individual at the locus, with $A_i$ coming from the mother and $A_j$ from the father (p. 72)
+* $p_{ij}(x, t)$ is the frequency of genotype $A_i A_j$ among age-$x$ females at time $t$. $\textbf{p}_{ij}(t)$ denotes the vector across ages (p. 72)
+* $p_{i}(x, t)$ is the frequency of allele $A_i$ among age-$x$ females at time $t$. $\textbf{p}_{i}(t)$ denotes the vector across ages (p. 72)
+* $n_{ij}(x, t)$ is the numbers of age-$x$ females with genotype $A_i A_j$ at time $t$. Corresponding vectors are given by $\textbf{n}_{ij}(t)$  (p. 72)
+* $n_{i}(x, t)$ are the numbers of copies of allele $i$ carried by age-$x$ females at time $t$. Corresponding vectors are given by $\textbf{n}_{i}(t)$ (p. 72)
+
+Again, corresponding quantities for males are indicated with an asterisk.
+
+The remainder of chapter 2 derives various results (conditions for Hardy-Weinburg equilibria, drift, sex-linked alleles) when the allele does not affect fitness.
