@@ -68,3 +68,7 @@ However, Charlesworth proceeds by rather qualititative arguments about how chang
 Explicit analysis of cumulative survivorship and maternity schedules is limited to the effects they may have on the shape of the stable age distribution.
 
 One note: Charlesworth does have a section (3.3.3) laying out the conditions for a polymorphic equilibrium under heterozygote advantage. But it is only expressed in terms of $w_{ij}$ and $k_{ij}$.
+
+# Selection dynamics (Chapter 4)
+Nearly the entire chapter is expressed in terms of $w_{ij}$ and $k_{ij}$.
+$l$ and $m$ make a brief appearance in section 4.3.4, where they are used to derive the probability generating function for the number of $ij$ offspring produced by an $ij$ parent when one of the alleles is rare.
