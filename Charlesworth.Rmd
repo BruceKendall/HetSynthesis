@@ -21,7 +21,7 @@ Discrete time:
 Continuous time:
 
 * $m(x, t)$ is the rate of production of female zygotes  by a female aged $x$ at time $t$ (p. 13)
-* $\mu(x,t)$ is the age-specific deat rate at time $t$ (p. 12)
+* $\mu(x,t)$ is the age-specific death rate at time $t$ (p. 12)
 * $l(x,t)$ is the "probability that a female survives from conception at time $t-x$ to age $x$ at time $t$" (p. 12). Called the "survival function," it is given by $l(x,t) = \exp\left[- \int_0^x \mu(y, t-y) dy \right]$ (eq. 1.22).
 * $k(x,t)$, is the "reproductive function," given as $k(x,t) = l(x,t) m(x,t)$ (p. 13)
 
@@ -40,3 +40,5 @@ The remainder of chapter 1 is devoted to the dynamics of the age-structured mode
 Again, corresponding quantities for males are indicated with an asterisk.
 
 The remainder of chapter 2 derives various results (conditions for Hardy-Weinburg equilibria, drift, sex-linked alleles) when the allele does not affect fitness.
+
+# Genetic equilibria under selection
