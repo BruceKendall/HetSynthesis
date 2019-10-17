@@ -41,4 +41,28 @@ Again, corresponding quantities for males are indicated with an asterisk.
 
 The remainder of chapter 2 derives various results (conditions for Hardy-Weinburg equilibria, drift, sex-linked alleles) when the allele does not affect fitness.
 
-# Genetic equilibria under selection
+# Genetic equilibria under selection (chapter 3)
+Now the survival and/or birth rates depend on the genotype, so that we now have $m_{ij}(x,t)$,  $P_{ij}(x,t)$, $l_{ij}(x,t)$, and $k_{ij}(x,t)$ (pp. 120, 123-124).
+
+The general expression for a genotype's relative fitness, $w_{ij}$, is
+$$w_{ij} = \sum_x \frac{B(t-x)}{B(t)} k_{ij}(x,t),$$
+where $B(t)$ is the number of births in year $t$ (p. 131, eq. 3.24).
+If the environment is constant and the population has reached genetic equilibrium and stable age structure, then the ratio of births can be replaced by $\lambda_1^x$ (p. 134).
+
+If the environment is fluctuating, then the only general condition under which the system might reach genetic equilibrium is if the relative performances of the genotypes are independent of age and time:
+$$k_{ij}(x,t) = w_{ij}' k_s(x,t),$$
+where $k_s(x,t)$ is the demography of a reference genotypes and $w_{ij}'$ is a constant the characterizes the performance of genotype $ij$ relative to the reference genotype (p. 132, eq. 3.25).
+
+Charlesworth goes on to say that this condition is unlikely to be satisfied:
+
+> If selection acts at the level of age-specific survival probabilities, for example, and if genotypic differences in these are indpendent of age, we can write
+$$l_{ij}(x) = P_{ij}^x l_s(x)$$
+where $l_s(x)$ is the survival function for the genotype with the highest survival probabilities, and $P_{ij} \leq 1$ is a constant characteristic of $A_i A_j$. Even in this simple case, equation (3.25) is violated. (p. 132)
+
+**This appears to be the first explicit acknowledgement of the geometric relationship between annual survival and fitness.**
+
+The remainder of the chapter goes through various examples, mostly theoretical. 
+With one exception, the exposition is in terms of $w_{ij}$ and $k_{ij}$, ignoring the contrasting influences of survival and reproduction.
+The exception is section 3.4.1 ("Factors influencing reproductive fitness"), which looks explicitly at $l_{ij}(x)$ and $m_{ij}(x)$.
+However, Charlesworth proceeds by rather qualititative arguments about how changes in the stable age distribution (this is for a time-invarient model) will tend to favor genotypes with relatively high $k_{ij}(x)$ at smaller or larger values of $x$.
+Explicit analysis of cumulative survivorship and maternity schedules is limited to the effects they may have on the shape of the stable age distribution.
