@@ -72,3 +72,11 @@ One note: Charlesworth does have a section (3.3.3) laying out the conditions for
 # Selection dynamics (Chapter 4)
 Nearly the entire chapter is expressed in terms of $w_{ij}$ and $k_{ij}$.
 $l$ and $m$ make a brief appearance in section 4.3.4, where they are used to derive the probability generating function for the number of $ij$ offspring produced by an $ij$ parent when one of the alleles is rare.
+
+# Life-history evolution (Chapter 5)
+Section 5.2.1 (Selection intensity and age of gene action) looks explicitly at survival and birth rates when a genetype affects the rate at a specific age. 
+The formulas differ in detail, but the only real contrast that Charlesworth draws between them is that the selection intensity on survival is a non-increasing function of age, whereas that for birth rate may be increasing over some range of ages if the population is declining.
+
+The only other major way that the explicit demographic rates (as opposed to $k$) arise in this chapter are in the section on optimization, where a tradeoff between reproduction and survival needs to be assumed.
+
+It's also worth noting that Charlesworth did not appear to be aware of cohort selection (it's not mentioned in the section on senescence, for example).
