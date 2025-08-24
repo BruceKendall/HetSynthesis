@@ -2,9 +2,10 @@
 title: "Introduction"
 author: "Bruce Kendall"
 date: "June 25, 2016"
-output: 
-  html_document: 
-    keep_md: yes
+output:
+  pdf_document: default
+  html_document:
+    keep_md: true
 ---
 
 This is a collection of thoughts and analyses about heterogeneity that might evolve into one ore more papers.

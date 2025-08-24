@@ -1,65 +1,147 @@
----
-title: "Age within stage"
-author: "Bruce E. Kendall"
-date: "12/22/2017"
-output:
-  html_document:
-    df_print: paged
-  pdf_document: default
-header-includes: \usepackage{color}
----
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{color}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Age within stage},
+  pdfauthor={Bruce E. Kendall},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
 
-Here we look at the case where an individual's time within stage affects its probability of maturing to the next stage. 
-The most extreme is the "stage for age" substitution (as in the sea turtle models, and as explicated in Ebert's book), where each individual spends a fixed amount of time in the stage.
-Mathematically, this can be represented as 
+\title{Age within stage}
+\author{Bruce E. Kendall}
+\date{12/22/2017}
+
+\begin{document}
+\maketitle
+
+Here we look at the case where an individual's time within stage affects
+its probability of maturing to the next stage. The most extreme is the
+``stage for age'' substitution (as in the sea turtle models, and as
+explicated in Ebert's book), where each individual spends a fixed amount
+of time in the stage. Mathematically, this can be represented as
 \begin{equation}
 G(t_S) = \begin{cases}
           0, & t_S < T_S \\
           1, & t_S = T_S,
         \end {cases}
-\end{equation}
-where $t_S$ is the number of years within the stage, $T_S$ is the number of years to reach stage maturation, and $G$ is the maturation probability.
+\end{equation} where \(t_S\) is the number of years within the stage,
+\(T_S\) is the number of years to reach stage maturation, and \(G\) is
+the maturation probability.
 
-More generally, $G$ can be a continuous function of $t_S$; typically it will be increasing. 
+More generally, \(G\) can be a continuous function of \(t_S\); typically
+it will be increasing.
 
-Stage structured matrix models implicitly assume $G(t_S) = g$, independent of time within stage.
+Stage structured matrix models implicitly assume \(G(t_S) = g\),
+independent of time within stage.
 
-Perry de Valpine has already shown how the shape of $G$ affects the variance in time to complete the stage, which has knock-on effects on variance in time to maturity, survival to maturity, LRS, etc. (Need to check what he actually looked at.) 
-Here, we look at how a non-constant $G$ creates within-stage heterogeneity with a certain structure that reduced the variance in the fraction of individuals maturing, relative to a matrix model.
-The reduction in variance is not novel  (although seems to be pointedly ignored by Caswell and others in claiming that "individual stochasticity" is responsible for all the variance in LRS), but this analysis allows an explicit link to our work on demographic heterogeneity.
-To make the model explicitly stochastic (and to prevent Caswell's ability from writing it off as a "meaningless" deterministic model) we allow the size of each cohort recruiting to the stage to be stochastic.
+Perry de Valpine has already shown how the shape of \(G\) affects the
+variance in time to complete the stage, which has knock-on effects on
+variance in time to maturity, survival to maturity, LRS, etc. (Need to
+check what he actually looked at.) Here, we look at how a non-constant
+\(G\) creates within-stage heterogeneity with a certain structure that
+reduced the variance in the fraction of individuals maturing, relative
+to a matrix model. The reduction in variance is not novel (although
+seems to be pointedly ignored by Caswell and others in claiming that
+``individual stochasticity'' is responsible for all the variance in
+LRS), but this analysis allows an explicit link to our work on
+demographic heterogeneity. To make the model explicitly stochastic (and
+to prevent Caswell's ability from writing it off as a ``meaningless''
+deterministic model) we allow the size of each cohort recruiting to the
+stage to be stochastic.
 
-# Two-year stage-for-age
-For simplicity of explication, we start with a case where each individual spends exactly 2 years in the stage before maturing.
-Let the number of 1st-year individuals in year $t$ be $x_t$, and second-year be $y_t$. 
-Each year, each individual survives with probability $p$.
-Thus, $y_t$ is binomially distributed with size $x_{t-1}$ and probability $p$; and the number maturing at the end of the year, $m_t$, is binomially distributed with size $y_t$ and probability $1-p$.
-The fraction of individuals ready to mature (contingent on survival) is 
-\begin{equation}
+\section{Two-year stage-for-age}\label{two-year-stage-for-age}
+
+For simplicity of explication, we start with a case where each
+individual spends exactly 2 years in the stage before maturing. Let the
+number of 1st-year individuals in year \(t\) be \(x_t\), and second-year
+be \(y_t\). Each year, each individual survives with probability \(p\).
+Thus, \(y_t\) is binomially distributed with size \(x_{t-1}\) and
+probability \(p\); and the number maturing at the end of the year,
+\(m_t\), is binomially distributed with size \(y_t\) and probability
+\(1-p\). The fraction of individuals ready to mature (contingent on
+survival) is \begin{equation}
 z_t = \frac{y_t}{x_t+y_t}.\end{equation}
 
-We assume that the population is at a stochastic steady distribution (e.g., due to density dependence), so that the $x_t$ are drawn from an iid distribution with mean $E[X]$ and variance $V(X)$. 
-Let's find the mean and variance of $z_t$.
-For convenience we'll drop the subscript except where critical.
+We assume that the population is at a stochastic steady distribution
+(e.g., due to density dependence), so that the \(x_t\) are drawn from an
+iid distribution with mean \(E[X]\) and variance \(V(X)\). Let's find
+the mean and variance of \(z_t\). For convenience we'll drop the
+subscript except where critical.
 
-Start by Taylor expanding:
-\begin{equation}
+Start by Taylor expanding: \begin{equation}
 z(x,y) \approx z(E[X], E[Y]) + \frac{\partial z}{\partial x} (x - E[X]) +
                             \frac{\partial z}{\partial y} (y - E[Y]) +
            \frac{\partial z}{\partial x} \frac{\partial z}{\partial y} (x - E[X]) (y - E[Y]) +
            \frac{1}{2}\frac{\partial^2 z}{\partial x^2} (x - E[X])^2 +
            \frac{1}{2}\frac{\partial^2 z}{\partial y^2} (y - E[Y])^2,
-\end{equation}
-where the derivatives are evaluated at $x=E[x]$ and $y=E[y]$. 
-When we take the expectation, the linear terms fall away:
+\end{equation} where the derivatives are evaluated at \(x=E[x]\) and
+\(y=E[y]\). When we take the expectation, the linear terms fall away:
 \begin{equation}
 E[Z] \approx z(E[X], E[Y]) + 
            \frac{\partial z}{\partial x} \frac{\partial z}{\partial y} cov(X,Y) +
            \frac{1}{2}\frac{\partial^2 z}{\partial x^2} V(X) +
            \frac{1}{2}\frac{\partial^2 z}{\partial y^2} V(Y).
-\end{equation}
-Because $y_t$ depends on $x_{t-1}$, and $x_t$ and $x_{t-1}$ are independent, $cov(X,Y) = 0$, and thus
-\begin{equation}
+\end{equation} Because \(y_t\) depends on \(x_{t-1}\), and \(x_t\) and
+\(x_{t-1}\) are independent, \(cov(X,Y) = 0\), and thus \begin{equation}
 E[Z] \approx \frac{E[Y]}{E[X] + E[Y]} + 
            \frac{1}{2}\frac{\partial^2 z}{\partial x^2} V(X) +
            \frac{1}{2}\frac{\partial^2 z}{\partial y^2} V(Y).
@@ -67,7 +149,7 @@ E[Z] \approx \frac{E[Y]}{E[X] + E[Y]} +
 
 Now start calculating some terms.
 
-$$
+\[
 \begin{aligned}
 z &= \frac{y}{x+y}\\
 \frac{\partial z}{\partial x} &= \frac{-y}{(x+y)^2}\\
@@ -78,19 +160,18 @@ z &= \frac{y}{x+y}\\
 \frac{\partial^2 z}{\partial y^2} &= \frac{(x+y)^2-2x(x+y)}{(x+y)^4}\\
     &= \frac{y-x}{(x+y)^3}\\
 \end{aligned}
-$$
-Now, $E[Y] = p E[X]$, so $E[X]+E[Y] = (1+p)E[X]$ and $E[Y]/(E[X]+E[Y])=p/(1+p)$.
-Plugging these into the derivatives gives
-$$
+\] Now, \(E[Y] = p E[X]\), so \(E[X]+E[Y] = (1+p)E[X]\) and
+\(E[Y]/(E[X]+E[Y])=p/(1+p)\). Plugging these into the derivatives gives
+\[
 \begin{aligned}
 \frac{\partial^2 z}{\partial x^2} &=  \frac{2pE[X]}{(1+p)^3 E[X]^3}\\
     &= \frac{2p}{(1+p)^3 E[X]^2}\\
 \frac{\partial^2 z}{\partial y^2} &= \frac{-(1-p)E[X]}{(1+p)^3 E[X]^3}\\
     &= \frac{-(1-p)}{(1+p)^3 E[X]^2}
 \end{aligned}
-$$
-Finally, we need $V(Y)$. Letting $P(y)$ be the probability that $y_t= y$, we write out the probability distribution for $y_t$ and then take the appropriate expectations:
-$$
+\] Finally, we need \(V(Y)\). Letting \(P(y)\) be the probability that
+\(y_t= y\), we write out the probability distribution for \(y_t\) and
+then take the appropriate expectations: \[
 \begin{aligned}
 P(y) &= \sum_{x\ge y} P(x) {x \choose y} p^y (1-p)^{x-y}\\
 E[Y] &= \sum_y y P(y)\\
@@ -108,24 +189,28 @@ V(Y) &= E[Y]^2 - E[Y^2]\\
   &= p^2 E[X]^2 - p^2 E[X^2] + p(1-p) E[X]\\
   &= p^2 V(X) + p(1-p) E[X]
 \end{aligned}
-$$
+\]
 
-So, finally, we can write
-$$
+So, finally, we can write \[
 \begin{aligned}
 E[Z] &\approx \frac{p}{1+p} + \frac{1}{2}\frac{2p}{(1+p)^3 E[X]^2}V(X)+\frac{1}{2}\frac{-(1-p)}{(1+p)^3 E[X]^2}(p^2 V(X) + p(1-p) E[X])\\
   &=\frac{p}{1+p} + \frac{1}{2}\frac{2p - p^2 + p^3}{(1+p)^3 E[X]^2}V(X) -\frac{1}{2}\frac{p(1-p)^2}{(1+p)^3 E[X]^2}E[X]\\
   &= \frac{p}{1+p} \left[1 + \frac{1}{2} \left(\frac{p^2 - p + 2}{(1+p)^2} \frac{V(X)}{E[X]^2} - \frac{(1-p)^2}{(1+p)^2 E[X]}\right) \right] \\
   &= \frac{p}{1+p} \left[1 +  \frac{(1-p)^2 +(1+p)}{2(1+p)^2} \frac{V(X)}{E[X]^2} - \frac{(1-p)^2}{2(1+p)^2} \frac{1}{E[X]}   \right] \\
 \end{aligned}
-$$
-The first term is what you'd get in a purely deterministic world; the second term is the nonlinear averaging over variability in $x$ (notice that it depends on CV$^2$($X$)), and the third term is the nonlinear averaging over the binomial variability of $y_t | x_{t-1}$. 
-The fact that the units of $X$ don't cancel in the last term is moderately disturbing; is is a consequence of the fact that the binomial variance has apparent units of $N$ instead of $N^2$, which in turn is a consequence of the fact that the Bernoulli variance has terms in $1^2$ which get turned into $1$.
+\] The first term is what you'd get in a purely deterministic world; the
+second term is the nonlinear averaging over variability in \(x\) (notice
+that it depends on CV\(^2\)(\(X\))), and the third term is the nonlinear
+averaging over the binomial variability of \(y_t | x_{t-1}\). The fact
+that the units of \(X\) don't cancel in the last term is moderately
+disturbing; is is a consequence of the fact that the binomial variance
+has apparent units of \(N\) instead of \(N^2\), which in turn is a
+consequence of the fact that the Bernoulli variance has terms in \(1^2\)
+which get turned into \(1\).
 
-Now we turn to the variance of Z. 
-This requires calculating $E[Z^2]$.
-We proceed with Taylor expansion again; the only thing we need to change from before are the derivatives.
-$$
+Now we turn to the variance of Z. This requires calculating \(E[Z^2]\).
+We proceed with Taylor expansion again; the only thing we need to change
+from before are the derivatives. \[
 \begin{aligned}
 z^2 &= \frac{y^2}{(x+y)^2}\\
 \frac{\partial z^2}{\partial x} &= \frac{-2y^2(x+y)}{(x+y)^4}\\
@@ -137,27 +222,23 @@ z^2 &= \frac{y^2}{(x+y)^2}\\
 \frac{\partial^2 z^2}{\partial y^2} &= \frac{2x(x+y)^3-6xy(x+y)^2}{(x+y)^6}\\
     &= \frac{2x(x-2y)}{(x+y)^4}\\
 \end{aligned}
-$$
+\]
 
-Evaluating these at the expected values of $x$ and $y$ gives
-$$
+Evaluating these at the expected values of \(x\) and \(y\) gives \[
 \begin{aligned}
 \frac{\partial^2 z^2}{\partial x^2} &= \frac{6p^2 E[X]^2}{(1+p)^4 E[X]^4}\\
     &= \frac{6p^2}{(1+p)^4 E[X]^2}\\
 \frac{\partial^2 z^2}{\partial y^2} &= \frac{2(1-2p)E[X]^2}{(1+p)^4 E[X]^4}\\
     &= \frac{2(1-2p)}{(1+p)^4 E[X]^2}
 \end{aligned}
-$$
-So then:
-$$
+\] So then: \[
 \begin{aligned}
 E[Z^2] &\approx \frac{p^2}{(1+p)^2} + \frac{1}{2}\frac{6p^2}{(1+p)^4 E[X]^2}V(X) + \frac{1}{2}\frac{2(1-2p)}{(1+p)^4 E[X]^2}(p^2 V(X) + p(1-p) E[X])\\
   &= \frac{p^2}{(1+p)^2} \left[1 + \frac{2(2-p)}{(1+p)^2}\frac{V(X)}{E[X]^2} + \frac{(1-2p)(1-p)}{p(1+p)^2} \frac{1}{E[X]} \right]
 \end{aligned}
-$$
+\]
 
-Thus we have
-$$
+Thus we have \[
 \begin{aligned}
 V(Z) &= E[Z]^2 - E[Z^2]\\
   &\approx  \frac{p^2}{(1+p)^2} \left[1 + \frac{(1-p)^2 +(1+p)}{(1+p)^2} \frac{V(X)}{E[X]^2} - \frac{(1-p)^2}{(1+p)^2} \frac{1}{E[X]} + \frac{(1-p)^4 +(1-p)^2(1+p)}{2(1+p)^4} \frac{V(X)}{E[X]^3} \right. \\
@@ -166,12 +247,18 @@ V(Z) &= E[Z]^2 - E[Z^2]\\
   &= \frac{p^2}{(1+p)^2} \left[ \frac{p^2-3}{(1+p)^2} \frac{V(X)}{E[X]^2} - \frac{5p-p^2 }{(1+p)^2} \frac{1}{E[X]} + \frac{(1-p)^4 +(1-p)^2(1+p)}{2(1+p)^4} \frac{V(X)}{E[X]^3} \right. \\
   & \left. \qquad\qquad\qquad  + \frac{[(1-p)^2 +(1+p)]^2}{4(1+p)^4} \frac{V(X)^2}{E[X]^4} + \frac{(1-p)^4}{4(1+p)^4} \frac{1}{E[X]^2}\right]
 \end{aligned}
-$$
-How to make sense of this, I'm not sure. For what its worth, the 4th and 5th terms above---the 2nd line in the expression for $V(Z)$---are squares of the 2nd and 3rd expressions for $E[Z]$. But one thing that is clear, the fraction of individuals that is ready to mature has a lot of sources of variability, in contrast to the stochastic matrix models where the only variability is binomial sampling of $x+y$ with fixed probability $g$.
+\] How to make sense of this, I'm not sure. For what its worth, the 4th
+and 5th terms above---the 2nd line in the expression for \(V(Z)\)---are
+squares of the 2nd and 3rd expressions for \(E[Z]\). But one thing that
+is clear, the fraction of individuals that is ready to mature has a lot
+of sources of variability, in contrast to the stochastic matrix models
+where the only variability is binomial sampling of \(x+y\) with fixed
+probability \(g\).
 
-I think that the best analog of the variance in the number ready to mature in the Markov model is $(1/N) g(1-g)$, where we estimate $N$ as $E[X]+E[Y]$ and $g$ as $E[Z]$.
-So we have:
-$$
+I think that the best analog of the variance in the number ready to
+mature in the Markov model is \((1/N) g(1-g)\), where we estimate \(N\)
+as \(E[X]+E[Y]\) and \(g\) as \(E[Z]\). So we have: \$\$
+
 \begin{aligned}
 V_M(Z) &= \frac{1+p}{E[X]}  (E[Z] - E[Z]^2)\\
   &= \frac{1+p}{E[X]} \left( \frac{p}{1+p} \left[1 +  \frac{(1-p)^2 +(1+p)}{2(1+p)^2} \frac{V(X)}{E[X]^2} - \frac{(1-p)^2}{2(1+p)^2} \frac{1}{E[X]}   \right]\right.\\
@@ -189,5 +276,7 @@ V_M(Z) &= \frac{1+p}{E[X]}  (E[Z] - E[Z]^2)\\
        &= \frac{p}{E[X]} \left(\frac{1}{1+p}\left[1+\frac{2(p^3-p+1)}{(1+p)^2} \frac{V(X)}{E[X]^2} - \frac{4p^2 - p+1}{(1+p)^2} \frac{1}{E[X]}\right] -\frac{1+p}{p} V(Z)\right)\\
 
 \end{aligned}
-$$
-The question is, is this larger or smaller than $V(Z)$?
+
+\$\$ The question is, is this larger or smaller than \(V(Z)\)?
+
+\end{document}

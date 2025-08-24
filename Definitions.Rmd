@@ -2,7 +2,9 @@
 title: "Definitions"
 author: "Bruce Kendall"
 date: "July 14, 2016"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 # Dynamic and static traits
