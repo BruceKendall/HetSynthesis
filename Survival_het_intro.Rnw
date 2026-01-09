@@ -14,6 +14,7 @@
 \usepackage{lmodern}
 %
 \usepackage{verbatim}
+\usepackage{wrapfig}
 
 \begin{document}
 
@@ -85,22 +86,22 @@ How is it that we may be deluding ourselves by ignoring underlying variation? Co
 <<simulation1>>=
     source("SimpleSurvHetSimulation.R")
 @
-
-\begin{center}
-\begin{figure}
+\begin{wrapfigure}{r}{0.5\textwidth}
+%\begin{center}
+%\begin{figure}
 <<survhetpop, fig=TRUE, echo=FALSE>>=
     ggarrange(gp.f0, gp.f1, ncol=2, nrow=1, common.legend=TRUE)
 @
-\caption{Survival in a population composed of two types, one of which has superior survival. Survival in the total population (left) does not represent that of any individual.}\label{fig:SurvHetPop}
-\end{figure}
-\end{center}
+\caption{Survival in a population composed of two types, one of which has superior survival. Survival estimated for the entire population, ignoring the heterogeneity (left) does not represent that of any individual.}\label{fig:SurvHetPop}
+%\end{figure}
+%\end{center}
+\end{wrapfigure}
 
-This example (Figure \vref{fig:SurvHetPop}) may seem extreme, but it provides several important conclusions. Most important, the cumulative survival probability for the total population does not reflect that for any individual. A change in the initial composition of the population (here they were equal), for example, would give a different total survival function. Moreover, reliance simply on the survival estimate for the total population would miss the biological processes underlying the difference. Ignoring the predictors (in this case, type) can lead to misestimation.
+This example (Figure \vref{fig:SurvHetPop}) may seem extreme, but it provides several important conclusions. Most important, the cumulative survival probability for the pooled population does not reflect that for any individual. Moreover, reliance simply on the survival estimate for the pooled population would miss the biological processes underlying the difference. Ignoring the predictors (in this case, type) can lead to misestimation. For example, if the initial proportions of the two types were different (in this example they are equal), the right-hand figure would be unchanged, but the left-hand figure (for the pooled population) would be different.
 
 
 An important conceptual distinction is between measurable and nonmeasurable predictors. We can measure, at least in principle, the height of an organism. On the other hand, while we can posit that there are predictors that make an individual more or less prone to some disease (these may be, e.g., genetic, site-related, or socially induced), in practice it may be often be impossible to measure these. Similarly, while we may find that some families live longer than others, characterizing the genetic and environmental factors that cause this is typically beyond our grasp in practice.
 
-\clearpage
 
 \section{Frailty}
 

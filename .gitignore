@@ -4,7 +4,6 @@
 *.html
 *_cache
 *_files
-*.pdf
 *.aux
 *.bbl
 *.bak
