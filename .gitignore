@@ -5,3 +5,10 @@
 *_cache
 *_files
 *.pdf
+*.aux
+*.bbl
+*.bak
+*.log
+*.synctex
+*.tex
+Het.prj
