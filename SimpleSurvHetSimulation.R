@@ -2,6 +2,8 @@
 
 # Generate numbers of individuals at each time
 # Parameters to be set are mu_x (mortality), NO_x (initial size of each group), and Time
+require(rlist)
+#
 mu_1 <- 0.15;
 mu_2 <- 0.25 * mu_1
 
@@ -28,7 +30,7 @@ S <- N/(N0_1 + N0_2)
 #
 ###############################################################################
 #   Now generate a dataframe with the appropriate numbers of deaths at each time
-#O
+#
     n <- c(N_1, N_2)
     Type <-c(rep("A", length(N_1)), rep("B",length(N_2)))
     time <- c(0:50,0:50)
@@ -52,13 +54,25 @@ S <- N/(N0_1 + N0_2)
     pad2 <-   c(times2, rep(max(time), len.diff2))
     event1 <- c(rep(1, length(times1)), rep(0, len.diff1))
     event2 <- c(rep(1, length(times2)), rep(0, len.diff2))
-    type <- c(rep("A", N_1[1]), rep("B", N_2[1]))
+    type <- as.factor(c(rep("A", N_1[1]), rep("B", N_2[1])))
     surv.df <- data.frame(type, time = c(pad1, pad2), event = c(event1, event2))
     
 ###############################################################################
 #   Now do Kaplan-Meier fits and plot themO    
-    fit0 <- survfit(Surv(time,  event) ~ 1, data = surv.df)
-    fit1 <- survfit(Surv(time,  event) ~ type, data = surv.df)
-    
-    gp.f0 <- ggsurvfit(fit0, linetype_aes=TRUE) + scale_ggsurvfit() + add_confidence_interval()
-    gp.f1 <- ggsurvfit(fit1, linetype_aes=TRUE) + scale_ggsurvfit() + add_confidence_interval()
+        
+#       clever way to really get a common legend including "pooled"
+#       but it does not yet work
+
+        
+        fit0<- survfit(Surv(time,  event) ~ 1, data = surv.df)
+        fit1 <- survfit(Surv(time,  event) ~ type, data = surv.df)
+        
+#       hack to add "pooled" to legend. Sadly, not working yet
+#        list.append(fit0, "strata")
+#       fit0$strata <- 50
+#        names(fit0$strata) <- "type=pooled"
+        
+        gp.f0 <- ggsurvfit(fit0, linetype_aes=TRUE, color="black") + scale_ggsurvfit() + add_confidence_interval(fill="grey") +  theme(legend.position="top")
+        gp.f1 <- ggsurvfit(fit1, linetype_aes=TRUE) + scale_ggsurvfit() + add_confidence_interval() +  theme(legend.position="top")
+
+

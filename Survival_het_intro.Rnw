@@ -12,9 +12,11 @@
 %\usepackage[math]{iwona}
 \usepackage[normalem]{ulem}
 \usepackage{lmodern}
+\usepackage{wrapfig}
 %
 \usepackage{verbatim}
-\usepackage{wrapfig}
+\input{"bib-commands.tex"}
+\bibliography{Survival_het_intro.bib}
 
 \begin{document}
 
@@ -51,22 +53,47 @@ options(warn = -1)
     library(ggpubr)
 @
 
-This is a working draft. Hell, it's not even that yet \ldots TEST
+This is a working draft. Hell, it's not even that yet \ldots 
 \section{Initial questions}
 \begin{itemize}
     \item Why models?
     \item Why covariates?
     \item But there are many possible covariates, most of which can't be measured in practice.
     \item What if you ignore some, or just don't have enough data? This is one reason for using frailties
+    \item What are some examples of usefully analyzed data? And what do these show?
 \end{itemize}
 
 \section{Introduction}
 
-Individuals vary in their survival probabilities. Not only because of variation in age, size, or stage, but because of their histories of nutrition, parasites, or disease, their varied access to resources or exposure to toxicants, and their varied positions in social hierarchies. There may also be genetic variation that contributes to varied survival propensities. 
+Individuals vary in their survival probabilities. Not only because of variation in age, size, or stage, but because of their histories of nutrition, parasites, or disease, their varied access to resources or exposure to toxicants, competition, and their varied positions in social hierarchies. There may also be genetic variation that contributes to varied survival propensities. Consequently, there is a rich store of biological questions to be revealed through the study of survival. But it also presents some knotty conceptual and technical issues. We introduce these problems first, and then review results from published empirical studies.
 
-This said, distinguishing between individual variation and stochasticity can be a knotty problem. Some individuals die quickly: did they have poor survival probabilities, or bad luck? In individual cases, we generally can't say, but appropriate sampling and modeling can address this problem. Similarly, survival is usually affected by many things, some of which we can readily identify and measure, like family, site, or presence of a disease. Accounting for these is necessary, both to make appropriate estimates about the survival process, and to understand some of the causes underlying variation in survival.
+\section{Estimating survival and its problems}
 
-There are several types of regression models used for survival data. These are somewhat specialized for survival data because survival times are not normally distributed, and the data are typically censored. By censored, we mean that we know only inequalities about the data (an individual survival time $x$ is greater than some value ($x \geq \tau$), between two values ($\tau_1 \leq x \leq \tau_2$), or less than some value( $x \leq \tau_2$)) It is also possible for the time of death to be known, but not the time of ``birth.'' Censorship and non-normality generally make it impossible to use well-known approaches like GLM. 
+A key problem is that the survival probability of an individual is not measurable. We can measure its death date, but an early death may be due to bad luck, not an inherently poor survival probability. We can only estimate survival probabilities for aggregates of individuals. Doing so requires modeling, based on biological insight.
+
+An additional problem is that survival processes generally do not lead to symmetric distributions of survival time. Intuition on this point can be had by considering the three types of survival curves in \citet{Deevey1947} . If there are many late or early deaths (types I or III), obviously the survival times are not distributed normally. If mortality is constant (type I), survival times are distributed exponentially. Add to this the facts that survival processes have an abrupt beginning, such as birth or the start of an experiment, and that most data sets involve some censorship (time of death known only as an inequality, e.g., because it was after the end of the study, between two observations, or caused by the researcher. As a consequence, the population mean (or marginal) survival is not generally a good descriptor for the entire population. The mean or marginal survival estimate may not describe survival for any individual. If there is substantial heterogeneity, these estimates may be far off, and the analysis may miss some important biology.
+
+Given this, how can we use models to estimate survival? There are many useful approaches. The most widely used are hazard models (including the Cox proportional hazards model and parametric hazard models), accelerated failure time models, and mark-recapture estimates. There are many forms of each. They have their own pros and cons in any application, and these are discussed elsewhere (XX, bunch of cites). Here we focus on issues (and pros and cons) related to heterogeneity \textbf{rewrite}:
+\begin{itemize}
+    \item Identifiability. Individuals die once. It may seem intuitively impossible to estimate any sort of individual propensity for mortality. But it turns out that all that is needed are (a) a named parametric distribution of these propensities, the expected value of which is finite, and (b) some covariates in the model (\citep{Yashin2001, Elbers1982, Heckman1984, and Balan2020}). For example, in a Cox proportional hazards model, one cannot estimate individual effects without specifying their parametric distribution, and some covariates. 
+    \item Levels of random variation. Random heterogeneity may occur at many different hierarchical levels (see Section X). At present, we are not aware of any software that permits frailty terms using more than a single level. There is no reason models cannot be extended to include multiple levels, but doing so is technically challenging. The \texttt{coxme} library in R does allow for mixed effects  
+    \item Measurability. An important conceptual distinction is between measurable and nonmeasurable predictors. We can measure, at least in principle, the height of an organism. On the other hand, while we can posit that there are predictors that make some individuals more or less prone to die (these may be, e.g., genetic, site-related, or socially induced), in practice it may be often be impossible to measure these. Similarly, while we may find that some families live longer than others, characterizing the genetic and environmental factors that cause this is typically beyond our grasp in practice.
+    \item Omitted covariates. We may have data on some important covariates but not others. For example, we may have data about individual types of microsites, but we rarely have data about variation in gene loci that may affect survival. In ordinary least-squares regression with independent regressors, omitting covariates still allows for consistent estimates of the remaining covariates \textbf{Get some cites.}. This is not generally true for survival models \textbf{I don't know about MRR here}. Under a hazard model \citep{Bretagnolle1988a}, omitting a covariate causes underestimation of remaining covariates. This is not the case with accelerated failure time models \citep{Struthers1986}. 
+    \item Estimability of models in practice. Estimating some survival models presents computational challenges. In particular, it is difficult to estimate accelerated failure time models if they include random terms.  
+    \item \textbf{Anything else?}
+\end{itemize}
+
+
+
+
+Frailty: what it is and isn't. Not really an estimate of heterogeneity, b/c of model dependence. 
+
+How many covariates (or levels of frailty) are possible?
+
+
+
+Some individuals die quickly: did they have poor survival probabilities, or bad luck? In individual cases, we generally can't say, but appropriate sampling and modeling can address this problem. Similarly, survival is usually affected by many things, some of which we can readily identify and measure, like family, site, or presence of a disease. Accounting for these is necessary, both to make appropriate estimates about the survival process, and to understand some of the causes underlying variation in survival.
+
 
 \textbf{Mark-recapture data }
 
@@ -82,19 +109,15 @@ There's a bestiary of names -- covariates, factors, random factors, independent 
 \end{itemize}
 
 How is it that we may be deluding ourselves by ignoring underlying variation? Consider a simple example: there are two types in a population. Both have constant survival probabilities, but one (perhaps in poor microsites) survives each interval at $p \approx 0.86$, while the better survivors have $p \approx 0.96$. The simulated survival process is shown in Figure \vref{fig:SurvHetPop}.
-
+    
 <<simulation1>>=
     source("SimpleSurvHetSimulation.R")
 @
 \begin{wrapfigure}{r}{0.5\textwidth}
-%\begin{center}
-%\begin{figure}
 <<survhetpop, fig=TRUE, echo=FALSE>>=
-    ggarrange(gp.f0, gp.f1, ncol=2, nrow=1, common.legend=TRUE)
+    ggarrange(gp.f0, gp.f1, ncol=2, nrow=1)
 @
 \caption{Survival in a population composed of two types, one of which has superior survival. Survival estimated for the entire population, ignoring the heterogeneity (left) does not represent that of any individual.}\label{fig:SurvHetPop}
-%\end{figure}
-%\end{center}
 \end{wrapfigure}
 
 This example (Figure \vref{fig:SurvHetPop}) may seem extreme, but it provides several important conclusions. Most important, the cumulative survival probability for the pooled population does not reflect that for any individual. Moreover, reliance simply on the survival estimate for the pooled population would miss the biological processes underlying the difference. Ignoring the predictors (in this case, type) can lead to misestimation. For example, if the initial proportions of the two types were different (in this example they are equal), the right-hand figure would be unchanged, but the left-hand figure (for the pooled population) would be different.
@@ -144,6 +167,8 @@ But there are powerful methods for survival analysis, mainly developed in biosta
 
 
 Empirical studies: scrub-jays.
+
+\printbibliography
 
 
 \end{document}
