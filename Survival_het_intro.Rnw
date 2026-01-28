@@ -16,7 +16,7 @@
 %
 \usepackage{verbatim}
 \input{"bib-commands.tex"}
-\bibliography{Survival_het_intro.bib}
+%\bibliography{Survival_het_intro.bib}
 
 \begin{document}
 
@@ -46,11 +46,12 @@ defaultW <- getOption("warn")
 options(warn = -1)
 @
 
-<<other_libraries>>=
+<<other_libraries, echo=FALSE>>=
     library(survival)
     library(ggplot2)
     library(ggsurvfit)
     library(ggpubr)
+    library(xtable)
 @
 
 This is a working draft. Hell, it's not even that yet \ldots 
@@ -73,22 +74,48 @@ A key problem is that the survival probability of an individual is not measurabl
 
 An additional problem is that survival processes generally do not lead to symmetric distributions of survival time. Intuition on this point can be had by considering the three types of survival curves in \citet{Deevey1947} . If there are many late or early deaths (types I or III), obviously the survival times are not distributed normally. If mortality is constant (type I), survival times are distributed exponentially. Add to this the facts that survival processes have an abrupt beginning, such as birth or the start of an experiment, and that most data sets involve some censorship (time of death known only as an inequality, e.g., because it was after the end of the study, between two observations, or caused by the researcher. As a consequence, the population mean (or marginal) survival is not generally a good descriptor for the entire population. The mean or marginal survival estimate may not describe survival for any individual. If there is substantial heterogeneity, these estimates may be far off, and the analysis may miss some important biology.
 
-Given this, how can we use models to estimate survival? There are many useful approaches. The most widely used are hazard models (including the Cox proportional hazards model and parametric hazard models), accelerated failure time models, and mark-recapture estimates. There are many forms of each. They have their own pros and cons in any application, and these are discussed elsewhere (XX, bunch of cites). Here we focus on issues (and pros and cons) related to heterogeneity \textbf{rewrite}:
+Given this, how can we use models to estimate survival? There are many useful approaches. The most widely used are proportional hazard models (including the Cox proportional hazards model and parametric hazard models), accelerated failure time models (AFT), and mark-recapture estimates. There are many forms of each. They have their own pros and cons in any application, and these are discussed elsewhere (XX, bunch of cites). Here we focus on issues (and pros and cons) related to heterogeneity \textbf{rewrite}:
 \begin{itemize}
-    \item Identifiability. Individuals die once. It may seem intuitively impossible to estimate any sort of individual propensity for mortality. But it turns out that all that is needed are (a) a named parametric distribution of these propensities, the expected value of which is finite, and (b) some covariates in the model (\citep{Yashin2001, Elbers1982, Heckman1984, and Balan2020}). For example, in a Cox proportional hazards model, one cannot estimate individual effects without specifying their parametric distribution, and some covariates. 
-    \item Levels of random variation. Random heterogeneity may occur at many different hierarchical levels (see Section X). At present, we are not aware of any software that permits frailty terms using more than a single level. There is no reason models cannot be extended to include multiple levels, but doing so is technically challenging. The \texttt{coxme} library in R does allow for mixed effects  
-    \item Measurability. An important conceptual distinction is between measurable and nonmeasurable predictors. We can measure, at least in principle, the height of an organism. On the other hand, while we can posit that there are predictors that make some individuals more or less prone to die (these may be, e.g., genetic, site-related, or socially induced), in practice it may be often be impossible to measure these. Similarly, while we may find that some families live longer than others, characterizing the genetic and environmental factors that cause this is typically beyond our grasp in practice.
-    \item Omitted covariates. We may have data on some important covariates but not others. For example, we may have data about individual types of microsites, but we rarely have data about variation in gene loci that may affect survival. In ordinary least-squares regression with independent regressors, omitting covariates still allows for consistent estimates of the remaining covariates \textbf{Get some cites.}. This is not generally true for survival models \textbf{I don't know about MRR here}. Under a hazard model \citep{Bretagnolle1988a}, omitting a covariate causes underestimation of remaining covariates. This is not the case with accelerated failure time models \citep{Struthers1986}. 
-    \item Estimability of models in practice. Estimating some survival models presents computational challenges. In particular, it is difficult to estimate accelerated failure time models if they include random terms.  
-    \item \textbf{Anything else?}
+    \item \textbf{Identifiability}. Individuals die once. It may seem intuitively impossible to estimate any sort of individual propensity for mortality. But it turns out that all that is needed are (a) a named parametric distribution of these propensities, the expected value of which is finite, and (b) some covariates in the model (\citep{Yashin2001, Elbers1982, Heckman1984, Balan2020}). For example, in a Cox proportional hazards model, one cannot estimate individual effects without specifying their parametric distribution, and some covariates. 
+  
+    \item \textbf{Omitted covariates}. We may have data on some important predictors but not others. For example, we may have data about individual types of microsites, but we rarely have data about variation in gene loci that may affect survival. In ordinary least-squares regression with independent regressors, omitting covariates still allows for consistent estimates of the remaining covariates. This is not always true for survival models. Under a proportional hazard model, omitting a covariate causes underestimation of the magnitude of remaining covariates \citep{Bretagnolle1988a}. Indeed, this appears to have been the cause of the so-called ``obesity paradox'' in health research, in which some scientists concluded erroneously that obesity has a protective effect on those with some problems like cardiovascular diseases. The intuitive explanation is simple \citep{Balan2020}: with two independent factors that both increase risk, those most at risk are those with large values of both. They tend to die early. Under a model with only one of these factors, over time a spuriousa negative correlation develops between the factors. The overall effect that is estimated is consequently too small for the included factor. At least for some distributions, omitted covariates do not have as large effects on AFT models as for the Cox proportional hazards model \citep{Gail1984, Struthers1986}. 
+        
+        Table \vref{tab:frail.sum} gives results of a simulation comparing the estimates of regression slopes under both Cox and accelerated failure time models, with and without a covariate, and with and without a frailty term. The same qualitative results occur if $\beta_{1} = \beta_{2}$. These results show that the AFT model is robust to omitted covariates, but the Cox model is less so. Adding a frailty term can help with this problem in the Cox model. 
+
+    \item \textbf{Frailty}. Including a random term -- usually called ''frailty'' -- can overcome some of the problem caused by omitted covariates. Frailty terms are random effects; in some respects they bear a similarity to random effects in the familiar generalized linear models. The term ``frailty model'' is used in at least two ways in the literature: it may refer to the form of the frailty term within a statistical model, or to the entire statistical model itself.
+        
+    \item \textbf{Measurability}. An important conceptual distinction is between measurable and nonmeasurable predictors. We can measure, at least in principle, the height of an organism. On the other hand, while we can posit that there are predictors that make some individuals more or less prone to die (these may be, e.g., genetic, site-related, or socially induced), in practice it may be often be impossible to measure these. Similarly, while we may find that some families live longer than others, characterizing the genetic and environmental factors that cause this is typically beyond our grasp in practice. Some of these unmeasurable effects can be absorbed into frailty terms.
+
+    \item \textbf{Levels of random variation}. Heterogeneity may occur at many different hierarchical levels (see Section X), and we expect that it is often likely to occur simultaneously at multiple levels. While this may be the case, it is not always practical to estimate such models. Sample size, of course, may be limiting, but there is a thornier problem: at present, there is little software that can estimate random effects for survival models at multiple levels. The \texttt{coxme} library in R does allow for mixed effects for the Cox proportional hazards model, and the \texttt{frailtyHL} library can fit models with multiple random levels for both Cox and accelerated failure time models. Models including shared frailty within specified groups can be estimated using the \texttt{streg} function in the Stan statistical modeling system. As of this writing, there is little experience with these approaches in ecology or evolutionary biology. Larger compendia of software for frailty modeling are provided in \citep{Balan2020} for proportional hazard models, and by \citep{Gorfine2023} for accelerated failure time models. 
+        
 \end{itemize}
+
+
+
+<<simul.frail, cache=TRUE, echo=FALSE>>=
+    source("coxph_sim.R")
+@
+
+<<frail.tab, results='asis', echo=FALSE>>=
+    frail.tab <- xtable(sum.df, auto=TRUE, caption="Summary of results of simulations including both covariates or only one.  Each
+        of 200 runs used a sample population of 2000, with two independent covariates, each $\\sim \\mathcal{N}(0,1)$, with $\\beta_{1} = 1, \\beta_{2} = -1$, and an exponential baseline hazard. 50 time steps were used, with uniform censoring on $(20, 50)$. The table gives the mean and standard deviation of $\\hat{\\beta_{1}}$ for 200 runs of the simulation. We did not add a frailty term to the AFT models because the regressions were indistinguishable without them.", label="tab:frail.sum")
+
+
+    rownames(frail.tab) <- c("Cox (1,2)", "Cox (1)", "Cox (1, f)", "AFT (1,2)", "AFT (1)")
+    colnames(frail.tab) <- c("Mean($\\hat{\\beta_{1}}$)", "SD($\\hat{\\beta_{1}}$)")
+
+
+    print(frail.tab, floating=TRUE, sanitize.text.function=function(x){x})   
+@
 
 
 
 
 Frailty: what it is and isn't. Not really an estimate of heterogeneity, b/c of model dependence. 
 
-How many covariates (or levels of frailty) are possible?
+
+There are many other types of survival models that may have potential uses in population biology. These include parametric hazard models
+
 
 
 
@@ -97,7 +124,7 @@ Some individuals die quickly: did they have poor survival probabilities, or bad 
 
 \textbf{Mark-recapture data }
 
-But there are powerful methods for survival analysis, mainly developed in biostatistics, industrial reliability testing, and sociology (where it is often called event history analysis). 
+
 
 
 \subsection{Predictors in survival models}
