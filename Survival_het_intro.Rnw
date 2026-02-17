@@ -103,7 +103,7 @@ How is it that we may be deluding ourselves by ignoring underlying variation? Co
 <<survhetpop, fig=TRUE, echo=FALSE>>=
     ggarrange(gp.f0, gp.f1, ncol=2, nrow=1, align="hv")
 @
-\caption{Survival in a population composed of two types, one of which has superior survival. Survival estimated for the entire population, ignoring the heterogeneity (left) does not represent that of any individual.}\label{fig:SurvHetPop}
+\caption{Survival in a population composed of two types, one of which has superior survival. Survival estimated for the entire population, ignoring the heterogeneity (left), yields an estimate that does not represent that of any individual.}\label{fig:SurvHetPop}
 \end{wrapfigure}
 
 This example (Figure \vref{fig:SurvHetPop}) may seem extreme, but it provides several important conclusions. Most important, the cumulative survival probability for the pooled population does not reflect that for any individual. Moreover, reliance simply on the survival estimate for the pooled population would miss the biological processes underlying the difference. Ignoring the predictors (in this case, site) can lead to misestimation. For example, if the initial proportions of the two types were different (in Figure \vref{fig:SurvHetPop}), the right-hand figure would be unchanged, but the left-hand figure (for the pooled population) would be different.
@@ -117,7 +117,7 @@ We often have data on some important predictors but not others. For example, we 
 
 <<frail.tab, results='asis', echo=FALSE>>=
     frail.tab <- xtable(sum.df, auto=TRUE, caption="Summary of results of simulations including both covariates or only one.  Each
-        of 200 runs used a sample population of 2000, with two independent covariates, each $\\sim \\mathcal{N}(0,1)$, with $\\beta_{1} = 1, \\beta_{2} = -1$, and an exponential baseline hazard. 50 time steps were used, with uniform censoring on $(20, 50)$. The table gives the mean and standard deviation of $\\hat{\\beta_{1}}$ for 200 runs of the simulation. We did not add a frailty term to the AFT models because the regressions were indistinguishable without them.", labelFP="tab:frail.sum")
+        of 200 runs used a sample population of 2000, with two independent covariates, each $\\sim \\mathcal{N}(0,1)$, with $\\beta_{1} = 1, \\beta_{2} = -1$, and an exponential baseline hazard. 50 time steps were used, with uniform censoring on $(20, 50)$. The table gives the mean and standard deviation of $\\hat{\\beta_{1}}$ for 200 runs of the simulation. We did not add a frailty term to the AFT models because the regressions were indistinguishable without them.", label="tab:frail.sum")
 
     rownames(frail.tab) <- c("Cox (1,2)", "Cox (1)", "Cox (1, f)", "AFT (1,2)", "AFT (1)")
     colnames(frail.tab) <- c("Mean($\\hat{\\beta_{1}}$)", "SD($\\hat{\\beta_{1}}$)")
@@ -126,7 +126,7 @@ We often have data on some important predictors but not others. For example, we 
     print(frail.tab, floating=TRUE, sanitize.text.function=function(x){x})   
 @
 
-Table \vref{tab:frail.sum} gives results of a simulation comparing the estimates of regression slopes under both Cox and accelerated failure time models, with and without a covariate, and with and without a frailty term. The same qualitative results occur if $\beta_{1} = \beta_{2}$. These results show that the AFT model is robust to omitted covariates, but the Cox model is less so. Adding a frailty term can help with this problem in the Cox model. A minute's thought should make it clear why the Cox model is so sensitive to missing covariates. Since the hazard under this model has no specified form, without further information, an early (or late) death might be equally due to luck, or to individual heterogeneity. 
+Table \vref{tab:frail.sum} gives results of a simulation comparing the estimates of regression slopes under both Cox and accelerated failure time models, with and without a covariate, and with and without a frailty term. The same qualitative results occur if $\beta_{1} = \beta_{2}$. These results show that the AFT model is relatively robust to omitted covariates, but the Cox model is less so. Adding a frailty term can help with this problem in the Cox model. A minute's thought should make it clear why the Cox model is so sensitive to missing covariates. Since the hazard under this model has no specified form, without further information, an early (or late) death might be equally due to luck, or to individual heterogeneity. 
 
 
 \subsection{Measurability} 
@@ -156,15 +156,23 @@ Heterogeneity may occur at many different hierarchical levels (see Section X), a
 
 Adding a frailty term to a model does not, unfortunately, provide an unambiguous estimate of the ``amount of heterogeneity'' in survival within a population. The estimate of the variance of the random effect depends, to varying degrees, on the fixed terms in the model, on the parametric form of the error terms (except in the Cox PH model), on the parametric form of the frailty, and on the adequacy of the model itself in describing the survival process. But this is similar to the situation with more familiar models, such as GLMMs: the values of quantities like variance components depend on the sampling scheme, on the validity of assumptions about normality, and on model adequacy. GLMMs, of course, permit more complex random structures than survival models currently do, but sample designs often limit the complexity of GLMMs that can be built for ecological problems. We argue that frailty models are an extremely valuable tool for population studies, and one that deserves more general use. 
 
+\subsection{Discrete time}
+What about estimates for survival in discrete time? This issue arises in several situations:
+\begin{itemize}
+  \item Censuses occurred at long intervals, so data are truly discrete.
+  \item You wish to use estimates in some discrete-time application like an integral projection model (IPM) or matrix projection model (MPM). 
+\end{itemize}
+
+If data are truly discrete, then discrete-time survival models obviously make sense. There are a number of them; \citet{Tutz2016} provides a thorough overview. Perhaps the most widely used in ecological applications is the complementary log-log regression model, in which one fits a linear regression model for the transformed dependent variable $\log \left[-\log \left(1-P_{it} \right) \right]$, where $P_{it}$ is the empirical probability of death for the $i$-th individual in the $t$-th time interval. This model has a number of commonly used names, including the Gompertz model, the grouped proportional hazard model, the gompit model, and extreme value regression. It arises from discretizing the Cox proportional hazard model \citep{Tutz2016}. This linear model with a cloglog link can be fit using any software for glm models; more appropriately, individual frailties can be accounted for by fitting a glmm with a random term for individual. Moreover, right censorship can be handled appropriately because individuals are not considered after they die or are censored. 
+
+There are several reasons to (usually) use discrete-time survival models rather than the more familiar logistic regression. Some authorities  recommend logistic regression by default (e.g.,\citet{Ellner2016})), but we argue that this is wrong. \textbf{Check if Caswell does this in his book too.} First, logistic regression leads to a survival estimate at the end of a study interval, while survival models lead to an estimated survival function throughout the study. Thus, using logistic regression typically leads to losing information. In particular, if there are covariates in the model, it is possible for survival curves to cross. Using logistic regression, one would miss this entirely. Second, survival models can use censored data, while logistic regression cannot. Again, this leads to a loss of information and potential distortion of results. The only case where logistic regression doesn't suffer by comparison to survival models is when there is no censorship, no covariates, and the organisms were censused only at the beginning and end of the study; then the two approaches should give similar results. One can easily calculate the cumulative probability of death in an interval from a survival curve.
+
 \section{Todo}
 
 \begin{itemize}
 \bf{
-    \item why not logistic regression?
-     
+             
     \item Mark-recapture data 
-    
-    \item What's done in IPMs
     
     \item Perhaps incorporate passages below. Or delete.
     
@@ -180,12 +188,8 @@ Adding a frailty term to a model does not, unfortunately, provide an unambiguous
 
 One difficulty is that there are relatively few ecologists or evolutionists who are deeply familiar with the statistical methods used for analyzing survival data. Deep assumption in much of ecol/evol that GLM and its relatives covers most of the statistics needed. Most of the survival literature is in biostatistics and human demography; these are approachable, but the problems and the jargon are somewhat different.
 
-Frailty models do not provide an estimate of the amount of heterogeneity, unless one can defend certain assumptions. This is because the variance of the random effect depends on the model specified and on the questions asked. CHECK ON THIS the random terms can be 
-inflated/deflated by other terms in model. Obviously, its magnitude is meaningful in a qualitative sense. 
 
-
-
-This said, distinguishing between individual variation and stochasticity can be a knotty problem. Some individuals die quickly: did they have poor survival probabilities, or bad luck? In individual cases, we generally can't say, but appropriate sampling and modeling can address this problem. 
+This said, distinguishing between individual variation and stochasticity can be a knotty problem, especially because it is not always clear what is meant by stochasticity. Some individuals die quickly: did they have poor survival probabilities, or bad luck? In individual cases, we generally can't say, but appropriate sampling and modeling can address this problem. 
 
 
 \printbibliography
