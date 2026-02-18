@@ -1,0 +1,120 @@
+% Bibliog
+%
+%\usepackage[natbib, authordate, ibidtracker=false, backend=biber, doi=false, url=false, arxiv=false, isbn=false, eprint=false, autocite=inline, backref=true]{ecobiblatex}   %{biblatex-chicago}
+%\usepackage[notes,backend=biber,bibencoding=utf8,isbn=false,annotation]{biblatex-chicago}
+\usepackage[natbib, bibstyle=ext-authoryear, dashed=true, backend=biber, doi=false, url=false, arxiv=false, isbn=false, eprint=false, autocite=inline, backref=false, citestyle=authoryear, giveninits=true, uniquename=init]{biblatex}
+%   
+\DeclareFieldFormat{titlecase:title}{\MakeSentenceCase*{#1}}
+\DeclareFieldFormat{titlecase:journaltitle}{#1}
+\DeclareFieldFormat{biblabeldate}{#1}
+\DeclareDelimFormat[bib]{nameyeardelim}{\space}
+%
+% Change width of dash and bibhang
+\setlength\bibhang{.5in}
+\renewcommand*{\bibnamedash}{%
+  \ifdimless{\leftmargin}{0.75em}
+    {\mbox{\textemdash\space}}
+    {\makebox[\leftmargin][l]{%
+       \ifdimless{\leftmargin}{1.25em}
+         {\textendash}
+         {\rule{.8\bibhang}{.2pt}}}}}
+%
+% Get rid of "In:"
+\renewbibmacro{in:}{%
+  \ifentrytype{article}{}{\printtext{\bibstring{in}\intitlepunct}}}
+%
+% Add colon and space after volume
+\renewcommand*{\bibpagespunct}{\addcolon\space}
+%
+% Get rid of paretheses around year
+\usepackage{xpatch}
+%%\xpatchbibmacro{date+extrayear}{%
+%%  \printtext[parens]%
+%%}{%
+%%  \setunit*{\addperiod\space}%
+%%  \printtext%
+%%}{}{}
+%
+
+\xpatchbibmacro{date+extradate}{%
+  \printtext[parens]%
+}{%
+  \setunit*{\addcomma\space}%
+  \printtext%
+}{}{} 
+
+\usepackage{bibentry}
+\ExecuteBibliographyOptions{maxnames=3,maxbibnames=5,minnames=1,maxcitenames=2, citetracker=true,
+    ibidtracker=constrict, loccittracker=constrict}%,
+%
+% Biber directives to prevent use of number and month fields, prevents printing in journal entries
+\DeclareSourcemap{
+  \maps[datatype=bibtex, overwrite]{
+    \map{
+      \step[fieldset=number, null]
+      \step[fieldset=month, null]
+    }
+  }
+}
+%
+\renewcommand*{\nameyeardelim}{\addcomma\space}		% JEB format
+%\renewcommand*{\bibnamedash}{\printnames{author}}		% turn off dashes for redundant names
+\renewcommand*{\bibinitdelim}{\unspace\nopunct}			% between initials
+\DeclareNameAlias{author}{family-given}					% name inversion
+% turn off quote marks for titles
+\DeclareFieldFormat[article,inbook,incollection,inproceedings,
+  patent,thesis,unpublished]{title}{#1\isdot}
+
+\addbibresource{C:/Users/gafox/Bibliog/library.bib}
+%\addbibresource{C:/Users/gafox/Documents/Bibliog/ThisWk.bib}
+%
+\DeclareFieldFormat[article]{pages}{#1}
+\DeclareFieldFormat[article]{volume}{\textbf{#1}}
+%
+\DefineBibliographyStrings{english}{%
+  backrefpage = {page},% originally "cited on page"
+  backrefpages = {pages},% originally "cited on pagerS"
+}
+%
+%\input{BibliographyCategories.tex}
+
+%\DeclareAutoCiteCommand{footnote}[f]{\footcite}{\footcites}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\newcommand{\addcite}[2]{%
+    {\color{blue}\cite{#2}}\addtocategory{#1}{#2}
+}
+\definecolor{light-gray}{gray}{0.75}
+\newcommand{\donecite}[2]{%
+    {\color{light-gray}\cite{#2}}\addtocategory{Read}{#2}
+}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Dates should be year only
+\AtEveryBibitem{\clearfield{month}}
+\AtEveryBibitem{\clearfield{day}}
+%
+% Get rid of extraneous language and editor info %
+\AtEveryBibitem{%
+  \clearlist{language}%
+}
+\AtEveryCitekey{%
+  \clearlist{language}%
+}
+\AtEveryBibitem{%
+  \ifentrytype{article}
+        {\clearfield{editor}}
+        {}%
+}
+\AtEveryCitekey{%
+  \ifentrytype{article}
+        {\clearfield{editor}}
+        {}%
+}
+%
+\setlength\bibitemsep{1.5\itemsep} 
